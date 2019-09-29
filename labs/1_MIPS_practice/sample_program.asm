@@ -1,7 +1,6 @@
 # Demo Program
-# 
-#   CPE 315
-
+#
+# CPE 315
 
 # declare global so programmer can see actual addresses.
 .globl welcome
@@ -83,3 +82,4 @@ main:
 	# Exit (load 10 into $v0)
 	ori     $v0, $0, 10
 	syscall
+
