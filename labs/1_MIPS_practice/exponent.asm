@@ -1,3 +1,7 @@
+# Name: Luis Gomez & Yu Asai
+# Section: 01
+# Description: Exponent Program which computes exponentials by nested addition
+#
 #      private static final String PROMPT_TITLE = 
 #         "Exponent Program.\n " +
 #         "Compute A ^ B";

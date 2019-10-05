@@ -1,3 +1,7 @@
+# Name: Luis Gomez & Yu Asai
+# Section: 01
+# Description: Fast Mod Program which computes modulus operations by bit shifting by powers of 2
+#
 #      private static final String PROMPT_TITLE = 
 #         "Fast Mod Program.\n " +
 #         "Compute A % B";
