@@ -80,7 +80,7 @@ main:
    # Get A
    ori $v0, $0, 5
    syscall
-	add $t0, $t0, $v0
+	add $s0, $s0, $v0
 
    # Prompt B
    ori $v0, $0, 4
@@ -91,12 +91,12 @@ main:
    # Get B
    ori $v0, $0, 5
    syscall
-	add $t1, $t1, $v0
+	add $s1, $s1, $v0
 
 	# Display A
    ori $v0, $0, 1
    lui $a0, 0x1001
-   add $a0, $t0, $0 
+   add $a0, $s0, $0 
    syscall
 
    # newline
@@ -108,18 +108,45 @@ main:
 	# Display A
    ori $v0, $0, 1
    lui $a0, 0x1001
-   add $a0, $t1, $0
+   add $a0, $s1, $0
    syscall
-
-   # Exit (load 10 into $v0)
-	ori $v0, $0, 10
-	syscall
    
    # Compute Power of two for B
-#      int power = 0;
-#      if ( b !=  1 ) {
-#         int b_shifted = b;
-#         for(power = 0; b_shifted > 1; power++) {
-#            b_shifted = b_shifted >> 1;
-#         } 
-#      }
+   # s2 <- int power = 0;
+	and $s2, $s2, $0
+
+   # if ( b - 1 != 0 ) {
+	# t0 <- b - 1
+   addi $t0, $s1, -1
+   beq $t0, $0, cont
+ 
+	# $t0 <- int b_shifted = b;
+   and $t0, $s1, $s1
+   and $t1, $s1, $s1
+
+power:
+	# for(power = 0; b_shifted > 1; power++) {	
+	# 	b_shifted = b_shifted >> 1;
+   srl $t0, $t0, 1
+   addi $s2, $s2, 1	
+   addi $t1, $t0, -1
+   blez $t1, cont
+	j power
+
+cont:
+
+   # newline
+   ori $v0, $0, 4
+   lui $a0, 0x1001
+   ori $a0, $a0, 75
+   syscall
+
+	# Display Power
+   ori $v0, $0, 1
+   lui $a0, 0x1001
+   add $a0, $s2, $0
+   syscall
+
+    # Exit (load 10 into $v0)
+   ori $v0, $0, 10
+   syscall
