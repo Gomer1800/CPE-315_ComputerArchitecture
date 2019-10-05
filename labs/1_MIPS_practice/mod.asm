@@ -56,5 +56,8 @@ modText:
 .text
 
 main:
+
    # Setting up I/O
    ori   $v0, $0, 4
+   lui   $a0, 0x1001
+   syscall
