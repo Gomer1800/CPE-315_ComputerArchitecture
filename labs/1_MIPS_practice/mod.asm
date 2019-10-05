@@ -37,18 +37,23 @@
 #      System.out.print( "Result: " + mod + "\n" ); 
 
 .globl welcome
-.globl prompt
-.globl sumText
+.globl promptA
+.globl promptB
+.globl modText
 
 # Data Area (this area contains strings to be displayed during the program)
 .data
 
+# 0
 welcome:
-   .asciiz " Fast Mod Program \n Compute A % B\n"
-
-prompt:
-   .asciiz " Enter an integer: "
-
+   .asciiz " Fast Mod Program \n Compute A % B \n\n"
+# 37 
+promptA:
+   .asciiz " Enter integer A: "
+# 56
+promptB:
+   .asciiz " Enter integer B: "
+# 75
 modText:
    .asciiz " \n Mod = "
 
@@ -56,8 +61,33 @@ modText:
 .text
 
 main:
-
-   # Setting up I/O
-   ori   $v0, $0, 4
-   lui   $a0, 0x1001
+   # Welcome message
+   ori $v0, $0, 4
+	# reset a0 to 0 index
+   lui $a0, 0x1001
    syscall
+
+   # Prompt A
+   ori $v0, $0, 4
+   lui $a0, 0x1001
+   ori $a0, $a0, 37
+   syscall
+	
+   # Get A
+   ori $v0, $0, 5
+	add $t0, $t0, $v0
+   syscall
+
+   # Prompt B
+   ori $v0, $0, 4
+   lui $a0, 0x1001
+   ori $a0, $a0, 56
+   syscall
+	
+   # Get B
+   ori $v0, $0, 5
+   syscall
+
+   # Exit (load 10 into $v0)
+	ori $v0, $0, 10
+	syscall
