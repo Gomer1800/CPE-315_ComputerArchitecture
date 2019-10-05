@@ -39,6 +39,7 @@
 .globl welcome
 .globl promptA
 .globl promptB
+.globl newline
 .globl modText
 
 # Data Area (this area contains strings to be displayed during the program)
@@ -54,6 +55,9 @@ promptA:
 promptB:
    .asciiz " Enter integer B: "
 # 75
+newline:
+   .asciiz "\n"
+# 77
 modText:
    .asciiz " \n Mod = "
 
@@ -75,8 +79,8 @@ main:
 	
    # Get A
    ori $v0, $0, 5
-	add $t0, $t0, $v0
    syscall
+	add $t0, $t0, $v0
 
    # Prompt B
    ori $v0, $0, 4
@@ -87,7 +91,35 @@ main:
    # Get B
    ori $v0, $0, 5
    syscall
+	add $t1, $t1, $v0
+
+	# Display A
+   ori $v0, $0, 1
+   lui $a0, 0x1001
+   add $a0, $t0, $0 
+   syscall
+
+   # newline
+   ori $v0, $0, 4
+   lui $a0, 0x1001
+   ori $a0, $a0, 75
+   syscall
+
+	# Display A
+   ori $v0, $0, 1
+   lui $a0, 0x1001
+   add $a0, $t1, $0
+   syscall
 
    # Exit (load 10 into $v0)
 	ori $v0, $0, 10
 	syscall
+   
+   # Compute Power of two for B
+#      int power = 0;
+#      if ( b !=  1 ) {
+#         int b_shifted = b;
+#         for(power = 0; b_shifted > 1; power++) {
+#            b_shifted = b_shifted >> 1;
+#         } 
+#      }
