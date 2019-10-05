@@ -13,7 +13,6 @@
 #      System.out.print( "\nEnter B: "); 
 #      int b = in.nextInt();
 #
-#      System.out.println("\nYou  entered integer " + a);
 #
 #      // Compute Power of two for B
 #      int power = 0;
@@ -23,7 +22,6 @@
 #            b_shifted = b_shifted >> 1;
 #         } 
 #      }
-#      System.out.println( b + " = 2 ^ " + power );
 #
 #      // Compute Mode A % B = mod
 #
@@ -34,7 +32,7 @@
 #      int mod = a - (c << power) ; 
 #      
 #      // print result
-#      System.out.print( "Result: " + mod + "\n" ); 
+#      System.out.print( "Mod: " + mod + "\n" ); 
 
 .globl welcome
 .globl promptA
