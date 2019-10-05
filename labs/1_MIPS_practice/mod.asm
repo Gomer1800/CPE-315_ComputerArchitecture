@@ -39,7 +39,7 @@
 .globl welcome
 .globl promptA
 .globl promptB
-.globl newline
+.globl powers
 .globl modText
 
 # Data Area (this area contains strings to be displayed during the program)
@@ -47,19 +47,19 @@
 
 # 0
 welcome:
-   .asciiz " Fast Mod Program \n Compute A % B \n\n"
-# 37 
+   .asciiz "Fast Mod Program \n Compute A % B \n\n"
+# 36
 promptA:
-   .asciiz " Enter integer A: "
-# 56
+   .asciiz "Enter integer A: "
+# 54
 promptB:
-   .asciiz " Enter integer B: "
-# 75
-newline:
-   .asciiz "\n"
-# 77
+   .asciiz "Enter integer B: "
+# 72
+powers:
+   .asciiz "\nPower of b: "
+# 86
 modText:
-   .asciiz " \n Mod = "
+   .asciiz "\nMod = "
 
 # Text Area (instructions)
 .text
@@ -74,7 +74,7 @@ main:
    # Prompt A
    ori $v0, $0, 4
    lui $a0, 0x1001
-   ori $a0, $a0, 37
+   ori $a0, $a0, 36
    syscall
 	
    # Get A
@@ -85,7 +85,7 @@ main:
    # Prompt B
    ori $v0, $0, 4
    lui $a0, 0x1001
-   ori $a0, $a0, 56
+   ori $a0, $a0, 54
    syscall
 	
    # Get B
@@ -93,24 +93,6 @@ main:
    syscall
 	add $s1, $s1, $v0
 
-	# Display A
-   ori $v0, $0, 1
-   lui $a0, 0x1001
-   add $a0, $s0, $0 
-   syscall
-
-   # newline
-   ori $v0, $0, 4
-   lui $a0, 0x1001
-   ori $a0, $a0, 75
-   syscall
-
-	# Display A
-   ori $v0, $0, 1
-   lui $a0, 0x1001
-   add $a0, $s1, $0
-   syscall
-   
    # Compute Power of two for B
    # s2 <- int power = 0;
 	and $s2, $s2, $0
@@ -135,16 +117,38 @@ power:
 
 cont:
 
-   # newline
+   # prompt power
    ori $v0, $0, 4
    lui $a0, 0x1001
-   ori $a0, $a0, 75
+   ori $a0, $a0, 72
    syscall
 
 	# Display Power
    ori $v0, $0, 1
    lui $a0, 0x1001
    add $a0, $s2, $0
+   syscall
+
+	# Compute Mode A % B = mod
+	# 1) A/B = C
+	# int c = a >> power;
+	srlv $t0, $s0, $s2
+
+	# 2) a - b * c = mod
+	# int mod = a - (c << power) 
+	sllv $t0, $t0, $s2 
+	sub $s3, $s0, $t0
+
+	# print result
+   ori $v0, $0, 4
+   lui $a0, 0x1001
+   ori $a0, $a0, 86
+   syscall
+
+	# print power
+   ori $v0, $0, 1
+   lui $a0, 0x1001
+   add $a0, $s3, $0
    syscall
 
     # Exit (load 10 into $v0)
