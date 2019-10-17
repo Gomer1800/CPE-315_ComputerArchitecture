@@ -1,47 +1,31 @@
 import java.util.*;
 
 public class makeInstDict {
-   private Map<String, List<String>> instDict = new HashMap<String, List<String>>();
+   private Map<String, String> instDict = new HashMap<String, String>();
 
    public void create(){
       /*and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal */
-      /* List for a value of dictionary: [format, type, binary code] */
-      List<String> and =  Arrays.asList("R", "funct","100100");
-      List<String> or =   Arrays.asList("R", "funct","100101");
-      List<String> add =  Arrays.asList("R", "funct","100000");
-      List<String> addi = Arrays.asList("I",   "op", "001000");
-      List<String> sll =  Arrays.asList("R", "funct","000000");
-      List<String> sub =  Arrays.asList("R", "funct","100010");
-      List<String> slt =  Arrays.asList("R", "funct","101010");
-      List<String> beq =  Arrays.asList("I",    "op","000100");
-      List<String> bne =  Arrays.asList("I",    "op","000101");
-      List<String> lw =   Arrays.asList("I",    "op","100011");
-      List<String> sw =   Arrays.asList("I",    "op","101011");
-      List<String> j =    Arrays.asList("J",    "op","000010");
-      List<String> jr =   Arrays.asList("R", "funct","001000");
-      List<String> jal =  Arrays.asList("J",    "op","000011");
-   
-      instDict.put("and", and);
-      instDict.put("or", or);
-      instDict.put("add", add);
-      instDict.put("addi", addi);
-      instDict.put("sll", sll);
-      instDict.put("sub", sub);
-      instDict.put("slt", slt);
-      instDict.put("beq", beq);
-      instDict.put("bne", bne);
-      instDict.put("lw", lw);
-      instDict.put("sw", sw);
-      instDict.put("j", j);
-      instDict.put("jr", jr);
-      instDict.put("jal", jal);
+      instDict.put("and", "100100");
+      instDict.put("or", "100101");
+      instDict.put("add", "100000");
+      instDict.put("addi", "001000");
+      instDict.put("sll",  "000000");
+      instDict.put("sub", "100010");
+      instDict.put("slt", "101010");
+      instDict.put("beq", "000100");
+      instDict.put("bne", "000101");
+      instDict.put("lw", "100011");
+      instDict.put("sw", "101011");
+      instDict.put("j", "000010");
+      instDict.put("jr", "001000");
+      instDict.put("jal", "000011");
    }
 
-   public Map<String, List<String>> getInstDict() {
+   public Map<String, String> getInstDict() {
       return this.instDict;
    }
 
-   public void setInstDict(Map<String, List<String>> instDict) {
+   public void setInstDict(Map<String, String> instDict) {
       this.instDict = instDict;
    }
 }

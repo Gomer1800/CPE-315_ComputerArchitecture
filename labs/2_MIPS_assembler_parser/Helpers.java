@@ -10,8 +10,9 @@ public class Helpers {
 
    public static String _16bit_signed( int num ) {
    // positive number binary string
-      String binary = String.format("%16s", Integer.toBinaryString(Math.abs(num))).replace(' ', '0');
-
+      String binary = String.format("%16s",
+         Integer.toBinaryString(Math.abs(num))).replace(' ', '0');
+      // System.out.println("which num? " + Integer.toString(num));
       if( num > 0)
          return binary;
       else {
@@ -20,9 +21,23 @@ public class Helpers {
       }
    }
  
+   public static String _26bit_signed( int num ) {
+   // positive number binary string
+      String binary = String.format("%26s",
+         Integer.toBinaryString(Math.abs(num))).replace(' ', '0');
+      // System.out.println("which num? " + Integer.toString(num));
+      if( num > 0)
+         return binary;
+      else {
+         StringBuffer buff = new StringBuffer(binary);
+         return Helpers.findTwoscomplement(buff);
+      }
+   }
+
    private static String findTwoscomplement(StringBuffer str) 
     { 
         int n = str.length(); 
+        // System.out.println("what size n? " + Integer.toString(n));
        
         // Traverse the string to get first '1' from 
         // the last of string 
@@ -51,6 +66,11 @@ public class Helpers {
         return str.toString(); 
     }
 
+   public static String _5bit_register_decoder(String reg) {
+      int regNum = Helpers._RegNum(reg); 
+      return _5bit_unsigned(regNum);
+   }
+
    public static String _5bit_unsigned(int num) {
    // returns a 5bit binary string representation of regNum
       return String.format("%5s", Integer.toBinaryString(num)).replace(' ', '0');
@@ -59,7 +79,8 @@ public class Helpers {
    public static int _RegNum( String regStr ) {
    // Finds matching register and returns Reg Num,
    // returns -1 if error
-      if( regStr.equals("$zero") ) { return  0; }
+      // System.out.println("Which reg? " + regStr);
+      if( regStr.equals("$zero") | regStr.equals("$0")) { return  0; }
 
       if( regStr.equals("$v0") ) { return  2; }
       if( regStr.equals("$v1") ) { return  3; }

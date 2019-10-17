@@ -8,23 +8,22 @@ import java.lang.*;
 
 public class Mips_Filter {
    
-   // ATTRIBUTES
-   
+   // ATTRIBUTES   
+
    private List<String> _inputList;
    private List<List<String>> _outputList;
 
    // CONSTRUCTOR
+
    public Mips_Filter(){}
 
    // FUNCTIONS
 
-   // setters
    public void set_list( List<String> some_list){
       _inputList = some_list;
       _outputList = new ArrayList<List<String>>();
    }
    
-   // getters
    public List<List<String>> get_list() {
       return _outputList;
    }
