@@ -22,7 +22,6 @@ public class Mips_Filter {
    public void set_list( List<String> some_list){
       _inputList = some_list;
       _outputList = new ArrayList<List<String>>();
-      System.out.println( "output size: " + _outputList.size());
    }
    
    // getters
@@ -32,11 +31,11 @@ public class Mips_Filter {
 
    public void print() {
    // Print Array: prints array contents by stepping through
-      System.out.println("input:"); 
+      System.out.println("\ninput:"); 
       for(int i=0; i < _inputList.size(); i++)
          System.out.println( _inputList.get(i) );  
      
-      System.out.println("output:"); 
+      System.out.println("\noutput:"); 
       for(int i=0; i < _outputList.size(); i++)
          System.out.println( _outputList.get(i) );  
    }
@@ -44,18 +43,9 @@ public class Mips_Filter {
    public void tokenize() {
    // Tokenize Strings and assign to output list 
    List<String> tokens;
-   //StringTokenizer st;
-   //String delims = " ,";
 
-   System.out.println( "tokenize list of size: " + _inputList.size());
       for(int i=0; i<_inputList.size(); i++) {
-         //st = new StringTokenizer(_inputList.get(i), delims);
          tokens = new ArrayList<String>(Arrays.asList((_inputList.get(i)).trim().split("[ ,\\s+\t\n]+")));
-         //while(st.hasMoreTokens()) {
-         //   tokens.add(st.nextToken());
-         //}
-
-         System.out.println( "token #" + i + ": " + tokens );
 
          if(this.is_blank(tokens) == true) {
             continue;
@@ -64,7 +54,6 @@ public class Mips_Filter {
             continue;
          }
          else { 
-            System.out.println("adding tokens...");
             _outputList.add(tokens);
          }
       }
@@ -77,7 +66,6 @@ public class Mips_Filter {
 
    private boolean is_blank( List<String> tokens) {
    // Filter Blank Lines
-   System.out.println("is_blank: size()= " + tokens.size());
    if(tokens.isEmpty())   { return true; }
    if(tokens.size() == 1 && tokens.contains("")) { return true; }
    else return false;

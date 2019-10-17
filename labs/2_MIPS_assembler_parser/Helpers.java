@@ -8,9 +8,9 @@ import java.lang.*;
 
 public class Helpers {
 
-   public static String getRegBinary( String regStr ) {
+   public static String _5bRegNum(String regStr) {
    // convert register string to binary
-      String regNum  = Integer.parseInt(regStr[2:]);
-      return Integer.toBinaryString( regNum ); 
+      int regNum  = Integer.parseInt(regStr.substring(2));
+      return String.format("%5s", Integer.toBinaryString(regNum)).replace(' ', '0');
    }
 }
