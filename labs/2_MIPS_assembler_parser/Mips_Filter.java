@@ -45,7 +45,7 @@ public class Mips_Filter {
    List<String> tokens;
 
       for(int i=0; i<_inputList.size(); i++) {
-         tokens = new ArrayList<String>(Arrays.asList((_inputList.get(i)).trim().split("[ ,\\s+\t\n]+")));
+         tokens = new ArrayList<String>(Arrays.asList((_inputList.get(i)).trim().split("[ (),\\s+\t\n]+")));
 
          if(this.is_blank(tokens) == true) {
             continue;

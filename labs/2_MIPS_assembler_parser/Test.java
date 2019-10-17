@@ -26,10 +26,25 @@ public class Test {
 
       myListList = myFilter.get_list();
  
-      // Testing helper
+      // Compare Filter Results
+      myFilter.print();
+
+      // Testing 5bit unsigned
       String regStr = myListList.get(1).get(1);
       int regNum = Helpers._RegNum(regStr);
-      System.out.println("\nRegister: " + regStr + " in binary: " + Helpers._RegBinary(regNum, 5));
+      System.out.println("\nRegister: " + regStr + " in 5bit-unsigned: " + Helpers._5bit_unsigned(regNum));
+      
+      // Testing 16bit signed
+      int someNum = 31;
+      String addressStr = myListList.get(2).get(3);
+      int addressNum = Integer.parseInt(addressStr);
+      int distance = someNum - addressNum;
+      System.out.println(
+         "\nAddress Distance (" + Integer.toString(someNum) + " - " + addressStr +
+            ") = " + Integer.toString(someNum-addressNum) +
+         " in 16bit-signed: " + Helpers._16bit_signed(distance));
+
+      // Compare Filter Results
       myFilter.print();
    }
 }
