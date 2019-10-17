@@ -7,18 +7,21 @@ public class Test {
    public static void main(String [] args) {
 
       // test array list
-      ArrayList<String> myList =  new ArrayList<>();   
+      List<String> myList =  new ArrayList<String>();   
 
-      myList.add("An");
+      myList.add("# Luis is so cool!");
+      myList.add("");
+      myList.add(" add $s0, $t1 ,  $v0 # another comment");
       myList.add(" ");
-      myList.add("Array");
-      myList.add(" ");
-      myList.add("List");
+      myList.add("    # add $s0, $t1 ,  $v0");
 
       // init filter object
       Mips_Filter myFilter = new Mips_Filter();
 
-      myFilter.assign_list( myList );
+      myFilter.set_list( myList );
+      
+      myFilter.tokenize();
+
       myFilter.print();
    }
 }
