@@ -14,7 +14,7 @@ public class Test {
       myList.add("main: ");
       myList.add(" add $s5, $t1 ,  $v0 # another comment");
       myList.add(" ");
-      myList.add(" label: add $s7, $t1 ,  $v0 # another comment");
+      myList.add(" label: lw $a3, 32($3) ");
       myList.add("    # add $s0, $t1 ,  $v0");
 
       // init filter object
@@ -27,8 +27,9 @@ public class Test {
       myListList = myFilter.get_list();
  
       // Testing helper
-      String reg = myListList.get(1).get(1);
-      System.out.println("\nRegister: " + reg + " in binary: " + Helpers._5bRegNum(reg));
+      String regStr = myListList.get(1).get(1);
+      int regNum = Helpers._RegNum(regStr);
+      System.out.println("\nRegister: " + regStr + " in binary: " + Helpers._RegBinary(regNum, 5));
       myFilter.print();
    }
 }
