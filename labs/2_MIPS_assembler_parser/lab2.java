@@ -1,9 +1,27 @@
+/*
+Name: Luis Gomez, Yu Asai
+Section: 1
+Description: Java Assembler
+Composed of 4 Modules and 2 Helper Classes
+
+Module
+1: File Reader
+2: Filter/Tokenizer
+3: Label/Instruction parser
+4: Binary Decoder 
+
+Helpers:
+1: Helper Functions
+2: Instruction Set Dictionary
+*/
+
+
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.*;
 
-public class Assembler {
+public class lab2 {
    
    public static void main(String [] args) {
 
