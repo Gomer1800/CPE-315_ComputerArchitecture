@@ -61,7 +61,7 @@ public class Mips_Filter {
 
    private boolean is_comment( List<String> tokens ) {
    // Filter Comments by looking for strings starting with # char
-      return (tokens.get(0)).equals("#");
+      return (tokens.get(0)).charAt(0) == '#';
    }
 
    private boolean is_blank( List<String> tokens) {
