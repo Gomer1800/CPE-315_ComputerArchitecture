@@ -43,16 +43,21 @@ public class Mips_Filter {
    public void tokenize() {
    // Tokenize Strings and assign to output list 
    List<String> tokens;
+   int ied;
 
       for(int i=0; i<_inputList.size(); i++) {
+         // check for edge case comments
+         if((ied = _inputList.get(i).indexOf("#")) != -1) {
+            _inputList.set(i, _inputList.get(i).substring(0,ied));
+         }
          tokens = new ArrayList<String>(Arrays.asList((_inputList.get(i)).trim().split("[ (),\\s+\t\n]+")));
 
          if(this.is_blank(tokens) == true) {
             continue;
          }
-         else if (this.is_comment(tokens) == true) {
-            continue;
-         }
+         //else if (this.is_comment(tokens) == true) {
+         //   continue;
+         //}
          else { 
             _outputList.add(tokens);
          }
