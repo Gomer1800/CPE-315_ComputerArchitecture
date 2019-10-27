@@ -32,11 +32,21 @@ public class Emulator_FSM {
       this._Commands.put("h", () -> this.printHelp());
       this._Commands.put("m", () -> this.printDataMem());
       this._Commands.put("c", () -> this.clearAll());
+      this._Commands.put("q", () -> this.exit());
    }
 
    // METHODS
 
    public void run_FSM() {
+     
+      Queue<String> commands = new LinkedList<>();
+      commands.add("h");
+      commands.add("m");
+      commands.add("c");
+      commands.add("q");
+      this._Num1 = 191;
+      this._Num2 = 193;
+
       while(this._NextState != State.EXIT) 
       {
          String command = "c";
@@ -55,13 +65,12 @@ public class Emulator_FSM {
                System.out.println("FSM READ");
                System.out.print("mips> ");
                // CALL BACK FUNCTION USED HERE
-               System.out.println(command);
                break;
 
             case EXEC:
-               this._NextState = State.EXIT;
+               this._NextState = State.READ;
                System.out.println("FSM EXEC");
-               this.exec( command, 2 , 5);
+               this.exec(commands.remove(), this._Num1, this._Num2);
                break;
 
             default:
@@ -128,8 +137,14 @@ public class Emulator_FSM {
    private void clearAll() {
    // c
       System.out.println("clearAll()");
-      _RegMem = new int[32];
-      _DataMem = new int[8][192];
-      _PC = 0;
+      this._RegMem = new int[32];
+      this._DataMem = new int[8][192];
+      this._PC = 0;
+   }
+   
+   private void exit() {
+   // q
+      System.out.println("exit()");
+      this._NextState = State.EXIT;
    }
 }
