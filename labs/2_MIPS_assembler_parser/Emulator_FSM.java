@@ -9,8 +9,7 @@ public class Emulator_FSM {
 
    // ATTRIBUTES
 
-   List<String> _EmulatorCommands =
-      new ArrayList<String>(Arrays.asList( "h", "d", "s", "r", "m", "c", "q"));
+   private Emulator_AssemblyDecoder _Decoder = new Emulator_AssemblyDecoder();
 
    private Map< String, Runnable> _Commands = new HashMap<>();
 
@@ -31,7 +30,7 @@ public class Emulator_FSM {
       this._AssemblyCode = assemblyCode;
       this._Commands.put("h", () -> this.printHelp());
       this._Commands.put("d", () -> this.dumpRegState());
-      // s num
+      this._Commands.put("s", () -> this.step());
       // r
       this._Commands.put("m", () -> this.printDataMem());
       this._Commands.put("c", () -> this.clearAll());
@@ -45,11 +44,13 @@ public class Emulator_FSM {
       Queue<String> commands = new LinkedList<>();
       commands.add("h");
       commands.add("m");
+      commands.add("s");
+      commands.add("d");
       commands.add("c");
       commands.add("d");
       commands.add("q");
-      this._Num1 = 191;
-      this._Num2 = 193;
+      this._Num1 = 1;
+      this._Num2 = 2;
 
       String cmd = "";
 
@@ -78,6 +79,8 @@ public class Emulator_FSM {
                this._NextState = State.READ;
                System.out.println("FSM EXEC");
                this.exec(cmd, this._Num1, this._Num2);
+               this._Num1 = 0;
+               this._Num2 = 0;
                break;
 
             default:
@@ -85,14 +88,6 @@ public class Emulator_FSM {
                break;
          } 
       }
-   }
-   
-   public void read() {
-   // Call for next command
-   // Parse and Verify command
-   // What do I mean by Parse, incoming token list are delimmited
-   // Should this be a state?
-   // How is this different from runCommand?
    }
    
    private void exec( String command, int ... num) {
@@ -116,6 +111,23 @@ public class Emulator_FSM {
       "c = clear all registers, memory, and the program counter to 0\n" +
       "q = exit the program\n"
    );
+   }
+
+   private void step() {
+   // s {num1}
+      System.out.println("Step()");
+      System.out.println("PC = " + _PC);
+      this._Num1 = 2;
+      if(this._PC < this._AssemblyCode.size()) {
+         int iter =
+            (this._Num1 == 0) ? 1:
+            ((_Num1 + _PC > _AssemblyCode.size()) ? (_AssemblyCode.size() - _PC): _Num1);
+         System.out.println("iter = " + Integer.toString(iter));;
+         for(int i=0; i<iter; i++) { 
+            _RegMem = this._Decoder.decodeAssembly( this._AssemblyCode.get(_PC), this._RegMem);
+            this._PC++;
+         } 
+      }  
    }
 
    private void dumpRegState() {
