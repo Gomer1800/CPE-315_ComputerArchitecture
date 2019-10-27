@@ -121,23 +121,23 @@ public class Emulator_FSM {
    private void step() {
    // s {num1}
       System.out.println("Step()");
-      System.out.println("PC = " + _PC);
-      this._Num1 = 2;
-      // check if we have already run through the code
-      if(this._PC < this._AssemblyCode.size()) {
-         int iter =
-            (this._Num1 == 0) ? 1:
-            ((_Num1 + _PC > _AssemblyCode.size()) ? (_AssemblyCode.size() - _PC): _Num1);
-         System.out.println("iter = " + Integer.toString(iter));;
-         for(int i=0; i<iter; i++) { 
-            _RegMem = this._Decoder.decodeAssembly( this._AssemblyCode.get(_PC), this._RegMem);
-            this._PC++;
-         } 
-      }  
+      _Num1 = 3;
+      for(int i=0; i<_Num1; i++)
+      {
+         if(_PC >= _AssemblyCode.size()) { break; }
+         _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem);
+         _PC++;
+      } 
    }
 
    private void run() {
    // r
+      System.out.println("run()");
+      while(_PC < _AssemblyCode.size())
+      {
+         _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem);
+         _PC++;
+      } 
    }
 
    private void dumpRegState() {
@@ -176,9 +176,9 @@ public class Emulator_FSM {
    private void clearAll() {
    // c
       System.out.println("clearAll()");
-      this._RegMem = new int[32];
-      this._DataMem = new int[8][192];
-      this._PC = 0;
+      _RegMem = new int[32];
+      _DataMem = new int[8][192];
+      _PC = 0;
    }
    
    private void exit() {
