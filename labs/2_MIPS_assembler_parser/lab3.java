@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.*;
 
-public class lab2 {
+public class lab3 {
    
    public static void main(String [] args) {
+
+      // ASSEMBLER
 
       // Set Up: Create hardcoded instruction dictionary for reference
       makeInstDict instructionDictionary = new makeInstDict();
@@ -46,18 +48,19 @@ public class lab2 {
       // Produce new array consisting of only assembly tokens with final addresses
       Mips_Parser myParser = new Mips_Parser();
       myParser.addressArr(filteredAssembly, myInstructions);
-      List<List<String>> cleanTokens =  myParser.tokensAddress;
+      List<List<String>> cleanTokens =  myParser._AssemblyCode;
       Map<String, Integer> labelDictionary = myParser.getlabelDict();
       myParser.setDifference();
       
       // Stage 4, output machine code to stdout
       BinaryDecoder myDecoder = new BinaryDecoder();
-      myDecoder._AssemblyCode = myParser.tokensAddress;
+      myDecoder._AssemblyCode = myParser._AssemblyCode;
       myDecoder._instructionDictionary = myInstructions;
       myDecoder.decodeBinary();
 
-      // MIPS EMULATOR
-      Emulator_FSM myFSM = new Emulator_FSM();
+      // EMULATOR
+
+      Emulator_FSM myFSM = new Emulator_FSM( myParser._AssemblyCode );
       myFSM.run_FSM();
    }
 }
