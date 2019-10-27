@@ -121,10 +121,10 @@ public class Emulator_FSM {
    private void dumpRegState() {
    // d
       System.out.println(
-         "\npc = " + _PC +
-         "\n$0 = " + _RegMem[0] + "\t$v0 = " + _RegMem[2] + "\t$v1 = " + _RegMem[3] + "\t$a0 = " + _RegMem[4] +
-         "\n$a1 = " + _RegMem[5] + "\t$a2 = " + _RegMem[6] + "\t$a3 = " + _RegMem[7] + "\t$t0 = " + _RegMem[8] +
-         "\n$t1 = " + _RegMem[9] + "\t$t2 = " + _RegMem[10] + "\t$t3 = " + _RegMem[11] + "\t$t4 = " + _RegMem[12] +
+         "\npc = "  + _PC +
+         "\n$0 = "  + _RegMem[0]  + "\t$v0 = " + _RegMem[2]  + "\t$v1 = " + _RegMem[3]  + "\t$a0 = " + _RegMem[4] +
+         "\n$a1 = " + _RegMem[5]  + "\t$a2 = " + _RegMem[6]  + "\t$a3 = " + _RegMem[7]  + "\t$t0 = " + _RegMem[8] +
+         "\n$t1 = " + _RegMem[9]  + "\t$t2 = " + _RegMem[10] + "\t$t3 = " + _RegMem[11] + "\t$t4 = " + _RegMem[12] +
          "\n$t5 = " + _RegMem[13] + "\t$t6 = " + _RegMem[14] + "\t$t7 = " + _RegMem[15] + "\t$s0 = " + _RegMem[16] +
          "\n$s1 = " + _RegMem[17] + "\t$s2 = " + _RegMem[18] + "\t$s3 = " + _RegMem[19] + "\t$s4 = " + _RegMem[20] +
          "\n$s5 = " + _RegMem[21] + "\t$s6 = " + _RegMem[22] + "\t$s7 = " + _RegMem[23] + "\t$t8 = " + _RegMem[24] +
