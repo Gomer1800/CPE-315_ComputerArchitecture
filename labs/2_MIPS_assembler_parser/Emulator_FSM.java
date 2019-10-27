@@ -40,7 +40,7 @@ public class Emulator_FSM {
 
    // METHODS
 
-   public void run_FSM(/*TODO: callback passed here */) {
+   public void run_FSM( Runnable nextCommand ) {
       // TODO: Whenn call back is supported, remove this 
       Queue<String> commands = new LinkedList<>();
       commands.add("h");

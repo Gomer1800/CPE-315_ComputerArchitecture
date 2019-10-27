@@ -1,7 +1,7 @@
 /*
 Name: Luis Gomez, Yu Asai
 Section: 1
-Description: Java Assembler
+Description: Mips Emulator
 Composed of 4 Modules and 2 Helper Classes
 
 Module
@@ -60,7 +60,37 @@ public class lab3 {
 
       // EMULATOR
 
+      List<String> lineList = new ArrayList<>();
+      Parser parse = new Parser();
+      Caller fnCall = new Caller();
+      boolean isScript;
+      String file;
+      List<List<String>> tokenized;
+      
+      if (args.length == 1) {
+         isScript = true;
+         file = args[0];
+      }
+      else {
+         isScript = false;
+         file = "";
+      }   
+      lineList = readCommands.parseCommands(isScript, file);
+      parse.tokenize(lineList);
+      tokenized = parse.gettokenized();
+      /* print tokenized List */
+      for (int i=0; i < tokenized.size(); i++) {
+         for (int j = 0; j < tokenized.get(i).size(); j++) {
+            System.out.print(tokenized.get(i).get(j) + " ");
+         }
+         System.out.println();
+      }
+      // until exit 
+      fnCall.functionCaller(isScript, tokenized);  
+      
+      // FSM
+
       Emulator_FSM myFSM = new Emulator_FSM( myParser._AssemblyCode );
-      myFSM.run_FSM();
+      myFSM.run_FSM(/* function call goes in here */);
    }
 }
