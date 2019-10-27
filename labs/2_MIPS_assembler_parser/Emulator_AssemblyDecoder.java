@@ -4,7 +4,7 @@ import java.lang.*;
 public class Emulator_AssemblyDecoder {
  
    // METHODS 
-   public int[] decodeAssembly(/* Line of Mips Code, Register Memory */
+   public void decodeAssembly(/* Line of Mips Code, Register Memory */
       List<String> assemblyCode,
       int [] regMem) 
    {
@@ -57,6 +57,5 @@ public class Emulator_AssemblyDecoder {
          String shamt = Helpers._5bit_unsigned(Integer.parseInt(assemblyCode.get(3)));
          //System.out.println("000000 00000 " + rt + " " + rd + " " + shamt + " " + code); 
       } 
-      return regMem;
    }
 }   
