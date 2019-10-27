@@ -30,6 +30,9 @@ public class Emulator_FSM {
       this._NextState = State.INIT;
       this._AssemblyCode = assemblyCode;
       this._Commands.put("h", () -> this.printHelp());
+      // d
+      // s num
+      // r
       this._Commands.put("m", () -> this.printDataMem());
       this._Commands.put("c", () -> this.clearAll());
       this._Commands.put("q", () -> this.exit());
@@ -47,10 +50,10 @@ public class Emulator_FSM {
       this._Num1 = 191;
       this._Num2 = 193;
 
+      String cmd = "";
+
       while(this._NextState != State.EXIT) 
       {
-         String command = "c";
-
          switch(this._NextState)
          {
             case INIT:
@@ -61,16 +64,19 @@ public class Emulator_FSM {
 
             case READ:
                // get next line of emulator instructions
+               cmd = commands.remove();
+
                this._NextState = State.EXEC;
                System.out.println("FSM READ");
                System.out.print("mips> ");
                // CALL BACK FUNCTION USED HERE
+               System.out.println(cmd);
                break;
 
             case EXEC:
                this._NextState = State.READ;
                System.out.println("FSM EXEC");
-               this.exec(commands.remove(), this._Num1, this._Num2);
+               this.exec(cmd, this._Num1, this._Num2);
                break;
 
             default:
