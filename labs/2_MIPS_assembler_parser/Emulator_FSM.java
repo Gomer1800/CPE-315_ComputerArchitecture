@@ -28,10 +28,11 @@ public class Emulator_FSM {
    public Emulator_FSM( /* callback function */ List<List<String>> assemblyCode ){
       this._NextState = State.INIT;
       this._AssemblyCode = assemblyCode;
+      // Populate hashmap with emulator command functions
       this._Commands.put("h", () -> this.printHelp());
       this._Commands.put("d", () -> this.dumpRegState());
       this._Commands.put("s", () -> this.step());
-      // r
+      this._Commands.put("r", () -> this.run());
       this._Commands.put("m", () -> this.printDataMem());
       this._Commands.put("c", () -> this.clearAll());
       this._Commands.put("q", () -> this.exit());
@@ -39,8 +40,8 @@ public class Emulator_FSM {
 
    // METHODS
 
-   public void run_FSM() {
-     
+   public void run_FSM(/*TODO: callback passed here */) {
+      // TODO: Whenn call back is supported, remove this 
       Queue<String> commands = new LinkedList<>();
       commands.add("h");
       commands.add("m");
@@ -71,14 +72,18 @@ public class Emulator_FSM {
                this._NextState = State.EXEC;
                System.out.println("FSM READ");
                System.out.print("mips> ");
-               // CALL BACK FUNCTION USED HERE
+               // TODO: use call back function here
+               // command token goes to exec
+               // argument tokens are assigned to num1 & num2 in that order
                System.out.println(cmd);
                break;
 
             case EXEC:
                this._NextState = State.READ;
                System.out.println("FSM EXEC");
+               // exec will take the command token call its corresponding logic
                this.exec(cmd, this._Num1, this._Num2);
+               // Reset these variables since emulator command is now done
                this._Num1 = 0;
                this._Num2 = 0;
                break;
@@ -118,6 +123,7 @@ public class Emulator_FSM {
       System.out.println("Step()");
       System.out.println("PC = " + _PC);
       this._Num1 = 2;
+      // check if we have already run through the code
       if(this._PC < this._AssemblyCode.size()) {
          int iter =
             (this._Num1 == 0) ? 1:
@@ -128,6 +134,10 @@ public class Emulator_FSM {
             this._PC++;
          } 
       }  
+   }
+
+   private void run() {
+   // r
    }
 
    private void dumpRegState() {
