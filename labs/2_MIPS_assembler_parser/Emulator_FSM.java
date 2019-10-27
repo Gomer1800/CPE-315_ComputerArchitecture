@@ -18,7 +18,8 @@ public class Emulator_FSM {
    
    private List<List<String>> _AssemblyCode;
 
-   private int [][] _RegMem;
+   private int [] _RegMem;
+   private int [][] _DataMem;
 
    private int _PC;
    private int _Num1,_Num2;
@@ -29,7 +30,8 @@ public class Emulator_FSM {
       this._NextState = State.INIT;
       this._AssemblyCode = assemblyCode;
       this._Commands.put("h", () -> this.printHelp());
-      this._Commands.put("m", () -> this.printMem());
+      this._Commands.put("m", () -> this.printDataMem());
+      this._Commands.put("c", () -> this.clearAll());
    }
 
    // METHODS
@@ -37,14 +39,14 @@ public class Emulator_FSM {
    public void run_FSM() {
       while(this._NextState != State.EXIT) 
       {
-         String command = "m";
+         String command = "c";
 
          switch(this._NextState)
          {
             case INIT:
                this._NextState = State.READ;
                System.out.println("FSM INIT");
-               this.init();
+               this.clearAll();
                break;
 
             case READ:
@@ -58,8 +60,8 @@ public class Emulator_FSM {
 
             case EXEC:
                this._NextState = State.EXIT;
-               this.exec( command, 2 , 5);
                System.out.println("FSM EXEC");
+               this.exec( command, 2 , 5);
                break;
 
             default:
@@ -69,12 +71,6 @@ public class Emulator_FSM {
       }
    }
    
-   private void init() {
-   // Initialize Emulated Registers
-      _RegMem = new int[8][192];
-      _PC = 0;
-   }
-
    public void read() {
    // Call for next command
    // Parse and Verify command
@@ -110,7 +106,7 @@ public class Emulator_FSM {
    );
    }
 
-   private void printMem() {
+   private void printDataMem() {
    // m num1 num2
       System.out.println("\nprintMem()");
       int i = this._Num1;
@@ -121,7 +117,7 @@ public class Emulator_FSM {
 
       for(int y=yMin; i<=this._Num2; y++) {
          for(int x=0; i<=this._Num2; x++) {
-            System.out.println("[" + Integer.toString(i++) + "] = " + Integer.toString(_RegMem[y][x]));
+            System.out.println("[" + Integer.toString(i++) + "] = " + Integer.toString(_DataMem[y][x]));
          }
       }
       System.out.println("\n");
@@ -129,11 +125,11 @@ public class Emulator_FSM {
  
    // HELPERS
 
-   private void resetMem() {
-      for(int y=0; y<8; y++) {
-         for(int x=0; x<192; x++) {
-            _RegMem[y][x] = 0;
-         }
-      }
+   private void clearAll() {
+   // c
+      System.out.println("clearAll()");
+      _RegMem = new int[32];
+      _DataMem = new int[8][192];
+      _PC = 0;
    }
 }
