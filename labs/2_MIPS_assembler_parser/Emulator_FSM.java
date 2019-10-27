@@ -103,6 +103,8 @@ public class Emulator_FSM {
       this._Num2 = num[1];
       this._Commands.get(command).run();
    }
+
+   // EMULATOR COMMAND LOGIC
   
    private void printHelp() {
    // h
@@ -125,8 +127,7 @@ public class Emulator_FSM {
       for(int i=0; i<_Num1; i++)
       {
          if(_PC >= _AssemblyCode.size()) { break; }
-         _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem);
-         _PC++;
+         _PC = _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem, _PC);
       } 
    }
 
@@ -135,8 +136,7 @@ public class Emulator_FSM {
       System.out.println("run()");
       while(_PC < _AssemblyCode.size())
       {
-         _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem);
-         _PC++;
+         _PC = _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem, _PC);
       } 
    }
 
@@ -170,8 +170,6 @@ public class Emulator_FSM {
       }
       System.out.println("\n");
    }
- 
-   // HELPERS
 
    private void clearAll() {
    // c
