@@ -13,7 +13,7 @@ public class Helpers {
       String binary = String.format("%16s",
          Integer.toBinaryString(Math.abs(num))).replace(' ', '0');
       // System.out.println("which num? " + Integer.toString(num));
-      if( num > 0)
+      if( num >= 0)
          return binary;
       else {
          StringBuffer buff = new StringBuffer(binary);
@@ -26,7 +26,7 @@ public class Helpers {
       String binary = String.format("%26s",
          Integer.toBinaryString(Math.abs(num))).replace(' ', '0');
       // System.out.println("which num? " + Integer.toString(num));
-      if( num > 0)
+      if( num >= 0)
          return binary;
       else {
          StringBuffer buff = new StringBuffer(binary);

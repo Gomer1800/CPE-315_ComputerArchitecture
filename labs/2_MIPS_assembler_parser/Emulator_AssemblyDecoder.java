@@ -1,13 +1,14 @@
 import java.util.*;
 import java.lang.*;
 
-public class BinaryDecoder {
+public class Emulator_AssemblyDecoder {
 
    // ATTRIBUTES
    public List<List<String>> _AssemblyCode;
-   public Map<String, String> _instructionDictionary;
-
-   public void decodeBinary() {
+   public List<String> _InstructionSet;
+ 
+   // METHODS 
+   public void decodeAssembly(/* Line of Mips Code, Register Memory */) {
 
       for (int i=0; i<_AssemblyCode.size(); i++)
       {
