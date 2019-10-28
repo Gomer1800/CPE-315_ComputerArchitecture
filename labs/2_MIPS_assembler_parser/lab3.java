@@ -60,37 +60,29 @@ public class lab3 {
 
       // EMULATOR
 
-      List<String> lineList = new ArrayList<>();
-      Parser parse = new Parser();
-      Caller fnCall = new Caller();
       boolean isScript;
       String file;
-      List<List<String>> tokenized;
-      
-      if (args.length == 1) {
-         isScript = true;
-         file = args[0];
+     
+      Parser parse = new Parser();
+      // Check if script present 
+      if (args.length == 2) {
+         parse._isScript = true;
+         file = args[1];
       }
       else {
-         isScript = false;
+         parse._isScript = false;
          file = "";
       }   
-      lineList = readCommands.parseCommands(isScript, file);
-      parse.tokenize(lineList);
-      tokenized = parse.gettokenized();
-      /* print tokenized List */
-      for (int i=0; i < tokenized.size(); i++) {
-         for (int j = 0; j < tokenized.get(i).size(); j++) {
-            System.out.print(tokenized.get(i).get(j) + " ");
-         }
-         System.out.println();
-      }
-      // until exit 
-      fnCall.functionCaller(isScript, tokenized);  
       
-      // FSM
+      Emulator_FSM myFSM = new Emulator_FSM( myParser._AssemblyCode, parse);
 
-      Emulator_FSM myFSM = new Emulator_FSM( myParser._AssemblyCode );
-      myFSM.run_FSM(/* function call goes in here */);
+      List<String> lineList = new ArrayList<>();
+      lineList = readCommands.parseCommands(parse._isScript, file);
+      
+      parse.tokenize(lineList);
+      /* print tokenized List */
+      parse.print();
+ 
+      myFSM.run_FSM();
    }
 }

@@ -22,10 +22,12 @@ public class Emulator_FSM {
 
    private int _PC;
    private int _Num1,_Num2;
+   
+   Parser _myParser;
 
    // CONSTRUCTOR
 
-   public Emulator_FSM( /* callback function */ List<List<String>> assemblyCode ){
+   public Emulator_FSM( List<List<String>> assemblyCode , Parser parser){
       this._NextState = State.INIT;
       this._AssemblyCode = assemblyCode;
       // Populate hashmap with emulator command functions
@@ -36,11 +38,14 @@ public class Emulator_FSM {
       this._Commands.put("m", () -> this.printDataMem());
       this._Commands.put("c", () -> this.clearAll());
       this._Commands.put("q", () -> this.exit());
+      this._myParser = parser;
    }
 
    // METHODS
 
-   public void run_FSM( Runnable nextCommand ) {
+   public void run_FSM() {
+      List<String> cmd = new ArrayList<>();
+      /*
       // TODO: Whenn call back is supported, remove this 
       Queue<String> commands = new LinkedList<>();
       commands.add("h");
@@ -53,7 +58,7 @@ public class Emulator_FSM {
       this._Num1 = 1;
       this._Num2 = 2;
 
-      String cmd = "";
+      */
 
       while(this._NextState != State.EXIT) 
       {
@@ -67,7 +72,19 @@ public class Emulator_FSM {
 
             case READ:
                // get next line of emulator instructions
-               cmd = commands.remove();
+
+               if(_myParser._isScript == true) {
+                  _myParser.fromScript(
+                     cmd, 
+                     _myParser.tokenize(readCommands.parseCommands(isScript, file)));
+               }
+               else {
+                  _myParser.fromStdin(
+                     cmd, 
+                     _myParser.tokenize(readCommands.parseCommands(isScript, file)));
+               }
+               _Num1 = (cmd.size() > 1) ? Integer.parseInt(cmd.get(1)):0;
+               _Num2 = (cmd.size() > 2) ? Integer.parseInt(cmd.get(2)):0;
 
                this._NextState = State.EXEC;
                System.out.println("FSM READ");
@@ -82,7 +99,7 @@ public class Emulator_FSM {
                this._NextState = State.READ;
                System.out.println("FSM EXEC");
                // exec will take the command token call its corresponding logic
-               this.exec(cmd, this._Num1, this._Num2);
+               this.exec(cmd.get(0), _Num1, _Num2);
                // Reset these variables since emulator command is now done
                this._Num1 = 0;
                this._Num2 = 0;
