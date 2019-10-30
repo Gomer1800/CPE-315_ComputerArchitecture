@@ -2,7 +2,7 @@ import java.util.*;
 import java.lang.Math;
    
 enum State {
-   INIT, READ, EXEC, UPDATE, EXIT;
+   INIT, READ, EXEC, EXIT;
 }
 
 public class Emulator_FSM {
@@ -72,27 +72,20 @@ public class Emulator_FSM {
 
             case READ:
                // get next line of emulator instructions
-
+               System.out.print("mips> ");
                if(_myParser._isScript == true) {
-                  _myParser.fromScript(
-                     cmd, 
-                     _myParser.tokenize(readCommands.parseCommands(isScript, file)));
+                  cmd = _myParser.fromScript();
+                  System.out.println(cmd);
                }
                else {
-                  _myParser.fromStdin(
-                     cmd, 
-                     _myParser.tokenize(readCommands.parseCommands(isScript, file)));
+                  cmd = _myParser.fromStdin();
                }
+               // get additional arguments if present
                _Num1 = (cmd.size() > 1) ? Integer.parseInt(cmd.get(1)):0;
                _Num2 = (cmd.size() > 2) ? Integer.parseInt(cmd.get(2)):0;
 
                this._NextState = State.EXEC;
                System.out.println("FSM READ");
-               System.out.print("mips> ");
-               // TODO: use call back function here
-               // command token goes to exec
-               // argument tokens are assigned to num1 & num2 in that order
-               System.out.println(cmd);
                break;
 
             case EXEC:
@@ -140,7 +133,7 @@ public class Emulator_FSM {
    private void step() {
    // s {num1}
       System.out.println("Step()");
-      _Num1 = 3;
+      _Num1 = (_Num1 == 0) ? 1:_Num1;
       for(int i=0; i<_Num1; i++)
       {
          if(_PC >= _AssemblyCode.size()) { break; }

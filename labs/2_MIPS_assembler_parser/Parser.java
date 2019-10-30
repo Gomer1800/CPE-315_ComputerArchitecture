@@ -7,10 +7,16 @@ import java.lang.*;
 
 public class Parser {
 
+   // ATTRIBUTES
+
+   public String _file = "";
+
    public boolean _isScript;
    
    private List<List<String>> _tokenized = new ArrayList<List<String>>();
    
+   // METHODS
+
    public List<List<String>> gettokenized() {
       return _tokenized;
    }
@@ -43,22 +49,24 @@ public class Parser {
       }
    }
    
-   public void fromStdin(List<String> cmd)
+   public List<String> fromStdin()
    {
-      System.out.println("fromStdin()");
+      System.out.print("fromStdin() ");
       List<String> nextCommand;
       List<String> lineList = readCommands.parseCommands(false, "");
       this.tokenize(lineList);
-      List<List<String>> tokenized = this.gettokenized();
-      cmd = tokenized.get(0);
-      tokenized.remove(0);
+      _tokenized = this.gettokenized();
+      nextCommand = _tokenized.get(0);
+      _tokenized.remove(0);
+      return nextCommand;
    }
 
-   public void fromScript(List<String> cmd)
+   public List<String> fromScript()
    {
-      System.out.println("fromScript()");
-      cmd = _tokenized.get(0);
+      System.out.print("fromScript() ");
+      List<String> nextCommand = _tokenized.get(0);
       _tokenized.remove(0);   // remove, so that you don't have to keep track of indices
+      return nextCommand;
    }
    
    public void print() 
