@@ -67,17 +67,19 @@ public class lab3 {
       // Check if script present 
       if (args.length == 2) {
          parse._isScript = true;
-         file = args[1];
+         parse._file = args[1];
       }
       else {
          parse._isScript = false;
-         file = "";
+         parse._file = "";
       }   
       
       Emulator_FSM myFSM = new Emulator_FSM( myParser._AssemblyCode, parse);
 
       List<String> lineList = new ArrayList<>();
-      lineList = readCommands.parseCommands(parse._isScript, file);
+      if(parse._isScript) {
+         lineList = readCommands.parseCommands(parse._isScript, parse._file);
+      }
       
       parse.tokenize(lineList);
       /* print tokenized List */
