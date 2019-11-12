@@ -9,8 +9,6 @@ public class Emulator_FSM {
 
    // ATTRIBUTES
 
-   private Emulator_AssemblyDecoder _Decoder = new Emulator_AssemblyDecoder();
-
    private Map< String, Runnable> _Commands = new HashMap<>();
 
    private State _NextState;
@@ -24,13 +22,24 @@ public class Emulator_FSM {
    private int _PC;
    private int _Num1,_Num2;
    
-   Parser _myParser;
+   private Parser _myParser;
 
-   // CONSTRUCTOR
+   // Edge Case Error Flags, needed by pipeline simulator
+   int _PrevDestReg = -1;
+   boolean _BranchTakenFlag =  false;
+   boolean _JumpFlag =  false;
+   boolean _LoadWordFlag =  false;
 
-   public Emulator_FSM( List<List<String>> assemblyCode , Parser parser){
+   // CONSTRUCTORS
+
+   public Emulator_FSM(
+      List<List<String>> assemblyCode,
+      Parser parser)
+   {
       this._NextState = State.INIT;
       this._AssemblyCode = assemblyCode;
+      this._myParser = parser;
+
       // Populate hashmap with emulator command functions
       this._Commands.put("h", () -> this.printHelp());
       this._Commands.put("d", () -> this.dumpRegState());
@@ -39,28 +48,27 @@ public class Emulator_FSM {
       this._Commands.put("m", () -> this.printDataMem());
       this._Commands.put("c", () -> this.clearAll());
       this._Commands.put("q", () -> this.exit());
-      this._myParser = parser;
+   }
+
+   public Emulator_FSM( List<List<String>> assemblyCode){
+      this._NextState = State.INIT;
+      this._AssemblyCode = assemblyCode;
+
+      // Populate hashmap with emulator command functions
+      this._Commands.put("h", () -> this.printHelp());
+      this._Commands.put("d", () -> this.dumpRegState());
+      this._Commands.put("s", () -> this.step());
+      this._Commands.put("r", () -> this.run());
+      this._Commands.put("m", () -> this.printDataMem());
+      this._Commands.put("c", () -> this.clearAll());
+      this._Commands.put("q", () -> this.exit());
    }
 
    // METHODS
 
    public void run_FSM() {
       List<String> cmd = new ArrayList<>();
-      /*
-      // TODO: Whenn call back is supported, remove this 
-      Queue<String> commands = new LinkedList<>();
-      commands.add("h");
-      commands.add("m");
-      commands.add("s");
-      commands.add("d");
-      commands.add("c");
-      commands.add("d");
-      commands.add("q");
-      this._Num1 = 1;
-      this._Num2 = 2;
-
-      */
-
+      
       while(this._NextState != State.EXIT) 
       {
          switch(this._NextState)
@@ -108,8 +116,6 @@ public class Emulator_FSM {
    
    private void exec( String command, int ... num) {
    // Execute Command
-   // requires loading of data no?
-   // does this also include update registers?
       this._Num1 = num[0];
       this._Num2 = num[1];
       this._Commands.get(command).run();
@@ -117,7 +123,7 @@ public class Emulator_FSM {
 
    // EMULATOR COMMAND LOGIC
   
-   private void printHelp() {
+   public void printHelp() {
    // h
    System.out.println(
       "\nh = show help\n" +
@@ -131,27 +137,45 @@ public class Emulator_FSM {
    );
    }
 
-   private void step() {
+   public void step() {
    // s {num1}
        System.out.println("Step()");
       _Num1 = (_Num1 == 0) ? 1:_Num1;
       for(int i=0; i<_Num1; i++)
       {
          if(_PC >= _AssemblyCode.size()) { break; }
-         _PC = _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem, _PC , _DataMem, _SP);
+         _PC = Emulator_Assembly_Decoder.decode(
+            _AssemblyCode.get(_PC),
+            _RegMem,
+            _PC,
+            _DataMem,
+            _SP,
+            _BranchTakenFlag,
+            _JumpFlag,
+            _LoadWordFlag,
+            _PrevDestReg);
       } 
    }
 
-   private void run() {
+   public void run() {
    // r
       System.out.println("run()");
       while(_PC < _AssemblyCode.size())
       {
-         _PC = _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem, _PC, _DataMem, _SP);
+         _PC = Emulator_Assembly_Decoder.decode(
+            _AssemblyCode.get(_PC),
+            _RegMem,
+            _PC,
+            _DataMem,
+            _SP,
+            _BranchTakenFlag,
+            _JumpFlag,
+            _LoadWordFlag,
+            _PrevDestReg);
       } 
    }
 
-   private void dumpRegState() {
+   public void dumpRegState() {
    // d
       System.out.println(
          "\npc = "  + _PC +
@@ -165,7 +189,7 @@ public class Emulator_FSM {
       );
    }
 
-   private void printDataMem() {
+   public void printDataMem() {
    // m num1 num2
       System.out.println("\nprintMem()");
       int i = this._Num1;
@@ -179,18 +203,38 @@ public class Emulator_FSM {
       System.out.println("\n");
    }
 
-   private void clearAll() {
+   public void clearAll() {
    // c
        //System.out.println("clearAll()");
       _RegMem = new int[32];
       _DataMem = new int[8192];
       _PC = 0;
       _SP = _DataMem[0];
+      _PrevDestReg = -1;
+      _BranchTakenFlag =  false;
+      _JumpFlag =  false;
+      _LoadWordFlag =  false;
    }
    
-   private void exit() {
+   public void exit() {
    // q
       System.out.println("exit()");
       this._NextState = State.EXIT;
    }
+
+   public int getPC() {
+      return this._PC;
+   }
+
+   public boolean getBranchTakenFlag() {
+      return _BranchTakenFlag;
+   }
+
+   public boolean getJumpFlag() {
+      return _JumpFlag;
+   }
+
+   public boolean getLoadWordFlag() {
+      return _LoadWordFlag;
+   }   
 }

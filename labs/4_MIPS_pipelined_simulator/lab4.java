@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.*;
 
-public class lab3 {
+public class lab4 {
    
    public static void main(String [] args) {
 
@@ -58,33 +58,38 @@ public class lab3 {
       myDecoder._instructionDictionary = myInstructions;
       myDecoder.decodeBinary();
 
-      // EMULATOR
+      // SCRIPT CHECK
 
       boolean isScript;
       String file;
      
-      Parser scriptParser = new Parser();
+      Parser myScriptParser = new Parser();
       // Check if script present 
       if (args.length == 2) {
-         scriptParser._isScript = true;
-         scriptParser._file = args[1];
+         myScriptParser._isScript = true;
+         myScriptParser._file = args[1];
       }
       else {
-         scriptParser._isScript = false;
-         scriptParser._file = "";
+         myScriptParser._isScript = false;
+         myScriptParser._file = "";
       }   
-      
-      Emulator_FSM myFSM = new Emulator_FSM( myParser._AssemblyCode, scriptParser);
 
       List<String> lineList = new ArrayList<>();
-      if(scriptParser._isScript) {
-         lineList = readCommands.parseCommands(scriptParser._isScript, scriptParser._file);
+      if(myScriptParser._isScript) {
+         lineList = readCommands.parseCommands(myScriptParser._isScript, myScriptParser._file);
       }
       
-      scriptParser.tokenize(lineList);
+      myScriptParser.tokenize(lineList);
       /* print tokenized List */
-      scriptParser.print();
+      myScriptParser.print();
  
-      myFSM.run_FSM();
+      // EMULATOR
+
+      Emulator_FSM myEmulator = new Emulator_FSM( myParser._AssemblyCode, myScriptParser);
+      myEmulator.run_FSM();
+
+      // PIPELINE SIMULATOR
+
+      Mips_Pipeline_Simulator mySimulator =  new Mips_Pipeline_Simulator( myParser._AssemblyCode, myScriptParser, myEmulator);
    }
 }
