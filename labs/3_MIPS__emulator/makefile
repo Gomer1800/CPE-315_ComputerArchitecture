@@ -5,7 +5,7 @@ JC = javac
 	$(JC) $(JFLAGS) $*.java
 
 CLASSES = \
-        lab4.java \
+        lab3.java \
         BinaryDecoder.java \
         Helpers.java \
         makeInstDict.java \
