@@ -1,7 +1,7 @@
 /*
 Name: Luis Gomez, Yu Asai
 Section: 1
-Description: Mips Emulator
+Description: Java Assembler
 Composed of 4 Modules and 2 Helper Classes
 
 Module
@@ -21,11 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.*;
 
-public class lab3 {
+public class lab2 {
    
    public static void main(String [] args) {
-
-      // ASSEMBLER
 
       // Set Up: Create hardcoded instruction dictionary for reference
       makeInstDict instructionDictionary = new makeInstDict();
@@ -35,56 +33,24 @@ public class lab3 {
       // Stage 1, read raw Assembly
       List<String> rawAssembly = new ArrayList<>();
       rawAssembly = readFile.parseFile(args[0]);
-            
+      
       // Stage 2, filter out blank lines, comments, tokenize strings 
       Mips_Filter myFilter = new Mips_Filter();
       myFilter.set_list( rawAssembly ); 
       myFilter.tokenize();
       List<List<String>> filteredAssembly = myFilter.get_list();
-      //myFilter.print();
 
       // Stage 3, parse tokenized assembly array.
       // Remove Labels, creating label dictionary
       // Produce new array consisting of only assembly tokens with final addresses
       Mips_Parser myParser = new Mips_Parser();
       myParser.addressArr(filteredAssembly, myInstructions);
-      List<List<String>> cleanTokens =  myParser._AssemblyCode;
       Map<String, Integer> labelDictionary = myParser.getlabelDict();
-      myParser.setDifference();
-      
+
       // Stage 4, output machine code to stdout
       BinaryDecoder myDecoder = new BinaryDecoder();
-      myDecoder._AssemblyCode = myParser._AssemblyCode;
+      myDecoder._AssemblyCode = myParser.tokensAddress;
       myDecoder._instructionDictionary = myInstructions;
       myDecoder.decodeBinary();
-
-      // EMULATOR
-
-      boolean isScript;
-      String file;
-     
-      Parser parse = new Parser();
-      // Check if script present 
-      if (args.length == 2) {
-         parse._isScript = true;
-         parse._file = args[1];
-      }
-      else {
-         parse._isScript = false;
-         parse._file = "";
-      }   
-      
-      Emulator_FSM myFSM = new Emulator_FSM( myParser._AssemblyCode, parse);
-
-      List<String> lineList = new ArrayList<>();
-      if(parse._isScript) {
-         lineList = readCommands.parseCommands(parse._isScript, parse._file);
-      }
-      
-      parse.tokenize(lineList);
-      /* print tokenized List */
-      parse.print();
- 
-      myFSM.run_FSM();
    }
 }

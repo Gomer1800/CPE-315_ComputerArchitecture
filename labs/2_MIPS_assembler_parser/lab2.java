@@ -55,9 +55,5 @@ public class lab2 {
       myDecoder._AssemblyCode = myParser.tokensAddress;
       myDecoder._instructionDictionary = myInstructions;
       myDecoder.decodeBinary();
-
-      // MIPS EMULATOR
-      Emulator_FSM myFSM = new Emulator_FSM();
-      myFSM.run_FSM();
    }
 }
