@@ -18,8 +18,9 @@ public class Emulator_FSM {
    private List<List<String>> _AssemblyCode;
 
    private int [] _RegMem;
-   private int [][] _DataMem;
+   private int [] _DataMem;
 
+   private int _SP;
    private int _PC;
    private int _Num1,_Num2;
    
@@ -66,7 +67,7 @@ public class Emulator_FSM {
          {
             case INIT:
                this._NextState = State.READ;
-               System.out.println("FSM INIT");
+               //System.out.println("FSM INIT");
                this.clearAll();
                break;
 
@@ -75,7 +76,7 @@ public class Emulator_FSM {
                System.out.print("mips> ");
                if(_myParser._isScript == true) {
                   cmd = _myParser.fromScript();
-                  System.out.println(cmd);
+                  System.out.println(cmd.get(0));
                }
                else {
                   cmd = _myParser.fromStdin();
@@ -85,12 +86,12 @@ public class Emulator_FSM {
                _Num2 = (cmd.size() > 2) ? Integer.parseInt(cmd.get(2)):0;
 
                this._NextState = State.EXEC;
-               System.out.println("FSM READ");
+               //System.out.println("FSM READ");
                break;
 
             case EXEC:
                this._NextState = State.READ;
-               System.out.println("FSM EXEC");
+               //System.out.println("FSM EXEC");
                // exec will take the command token call its corresponding logic
                this.exec(cmd.get(0), _Num1, _Num2);
                // Reset these variables since emulator command is now done
@@ -132,12 +133,12 @@ public class Emulator_FSM {
 
    private void step() {
    // s {num1}
-      System.out.println("Step()");
+       System.out.println("Step()");
       _Num1 = (_Num1 == 0) ? 1:_Num1;
       for(int i=0; i<_Num1; i++)
       {
          if(_PC >= _AssemblyCode.size()) { break; }
-         _PC = _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem, _PC);
+         _PC = _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem, _PC , _DataMem, _SP);
       } 
    }
 
@@ -146,7 +147,7 @@ public class Emulator_FSM {
       System.out.println("run()");
       while(_PC < _AssemblyCode.size())
       {
-         _PC = _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem, _PC);
+         _PC = _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem, _PC, _DataMem, _SP);
       } 
    }
 
@@ -168,25 +169,23 @@ public class Emulator_FSM {
    // m num1 num2
       System.out.println("\nprintMem()");
       int i = this._Num1;
-      int yMin = (int)Math.floor(this._Num1/192);
-      int yMax = (int)Math.floor(this._Num2/192);
       int xMin = this._Num1 % 192;
       int xMax = this._Num2 % 192;
 
-      for(int y=yMin; i<=this._Num2; y++) {
-         for(int x=0; i<=this._Num2; x++) {
-            System.out.println("[" + Integer.toString(i++) + "] = " + Integer.toString(_DataMem[y][x]));
-         }
+      for(int x=0; i<=this._Num2; x++) {
+         System.out.println("[" + Integer.toString(i++) + "] = " + Integer.toString(_DataMem[x]));
       }
+
       System.out.println("\n");
    }
 
    private void clearAll() {
    // c
-      System.out.println("clearAll()");
+       //System.out.println("clearAll()");
       _RegMem = new int[32];
-      _DataMem = new int[8][192];
+      _DataMem = new int[8192];
       _PC = 0;
+      _SP = _DataMem[0];
    }
    
    private void exit() {
