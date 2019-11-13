@@ -31,6 +31,10 @@ public class Mips_Pipeline_Simulator {
 
    boolean _OK_TO_STEP;
 
+   // PERFORMANCE VARIABLES
+   int _NumInst;
+   int _NumCycles;
+
    // CONSTRUCTOR
 
    public Mips_Pipeline_Simulator(
@@ -169,11 +173,40 @@ public class Mips_Pipeline_Simulator {
 
    private void run() {
    // r
-      //System.out.println("run()");
-      //while(_PC < _AssemblyCode.size())
-      //{
-      //   _PC = _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem, _PC, _DataMem, _SP);
-      ///}
+       System.out.println("Simulator run()");
+      // Setup
+      String currentCommand = this.getCurrentCommand();
+      List<String> nextCommands = this.getNextCommands();
+      boolean branchTakenFlag = false;
+      boolean jumpFlag        = false;
+      boolean loadWordFlag    = false;
+
+      do {
+         if(_OK_TO_STEP)
+         {
+            // 1) Store current command token
+            currentCommand = this.getCurrentCommand();
+            // 2) call emulator step
+            _myEmulator.step();
+            // 3) Store next 3 command tokens
+            nextCommands = this.getNextCommands();
+            // 4) Store Edge Case Flags
+            branchTakenFlag = _myEmulator.getBranchTakenFlag();
+            jumpFlag        = _myEmulator.getJumpFlag();
+            loadWordFlag    = _myEmulator.getLoadWordFlag();
+         }
+         // 5) Call Yus function step()
+         _OK_TO_STEP = this.stepCycle(currentCommand,nextCommands, branchTakenFlag, jumpFlag, loadWordFlag);
+         // 6) Update Stage
+         _CurrentStage = this.getNextStage();
+      } while(this.checkPipelineEmpty() == false);
+      this.printPerformance();
+   }
+
+   private void printPerformance() {
+      System.out.println("Program complete");
+      System.out.format("CPI = %f Cycles = %d Instructions = %d\n",
+      ((double)_NumInst)/_NumCycles,_NumCycles,_NumInst);
    }
 
    private void dumpRegState() {
@@ -183,8 +216,9 @@ public class Mips_Pipeline_Simulator {
 
   private void showPipelineState() {
    // p
-   
-      System.out.println(_PipelineRegMem);
+      System.out.println("pc if/id id/exe exe/mem mem/wb");
+      String strList = String.join(", ", _PipelineRegMem);
+      System.out.println(strList);
    }
 
    private void printDataMem() {
@@ -199,6 +233,8 @@ public class Mips_Pipeline_Simulator {
       _myEmulator.clearAll();
       this.initStages();
       _OK_TO_STEP = true;
+      _NumInst = 0;
+      _NumCycles = 0;
    }
    
    private void exit() {
@@ -256,6 +292,12 @@ public class Mips_Pipeline_Simulator {
       int PC = _myEmulator.getPC() - 1;
       List<String> _5Stages = new ArrayList<String>(5);
 
+      if(!_PipelineRegMem.get(4).equals("squash") &&
+         !_PipelineRegMem.get(4).equals("stall") &&
+         !_PipelineRegMem.get(4).equals("empty"))
+      {
+         _NumInst++;
+      }
       if(PC < _AssemblyCode.size())
       {
          if (branchTakenFlag){
@@ -293,6 +335,8 @@ public class Mips_Pipeline_Simulator {
             System.out.println("default");
             updatePipeline(currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
          }
+         // Finished 1 Cycle
+         _NumCycles++;
          if (branchTakenFlag || jumpFlag || loadWordFlag) {
             return false;
          }
@@ -311,7 +355,8 @@ public class Mips_Pipeline_Simulator {
    {
       System.out.println("updatePipeline");
       int PC = _myEmulator.getPC();
-      _PipelineRegMem.set(0,Integer.toString(Integer.parseInt(_PipelineRegMem.get(0)) + 1));
+
+      //_PipelineRegMem.set(0,Integer.toString(Integer.parseInt(_PipelineRegMem.get(0)) + 1));
       // Branch
       if (branchTakenFlag && _CurrentStage == pipelineStage.exe_mem) { //checks before moves
          _PipelineRegMem.set(4,_PipelineRegMem.get(3)); 
@@ -346,10 +391,22 @@ public class Mips_Pipeline_Simulator {
       }
    }
 
-   public void shiftRight() {
+   private void shiftRight() {
       System.out.println("shiftRight()");
       for (int index = _PipelineRegMem.size()-2; index >= 1; index --) {
          _PipelineRegMem.set(index+1,_PipelineRegMem.get(index));
       }
+   }
+
+   private boolean checkPipelineEmpty() {
+      for(int i=1; i<=5; i++) {
+         if(!_PipelineRegMem.get(i).equals("empty") &&
+            !_PipelineRegMem.get(i).equals("squash") &&
+            !_PipelineRegMem.get(i).equals("stall")) 
+         {
+            return false;
+         }
+      }
+      return true;
    }
 }
