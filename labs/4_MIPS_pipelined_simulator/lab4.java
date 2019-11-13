@@ -86,10 +86,11 @@ public class lab4 {
       // EMULATOR
 
       Emulator_FSM myEmulator = new Emulator_FSM( myParser._AssemblyCode, myScriptParser);
-      myEmulator.run_FSM();
+      //myEmulator.run_FSM();
 
       // PIPELINE SIMULATOR
 
       Mips_Pipeline_Simulator mySimulator =  new Mips_Pipeline_Simulator( myParser._AssemblyCode, myScriptParser, myEmulator);
+      mySimulator.run_FSM();
    }
 }

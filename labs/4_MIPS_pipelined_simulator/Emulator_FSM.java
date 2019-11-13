@@ -139,7 +139,7 @@ public class Emulator_FSM {
 
    public void step() {
    // s {num1}
-       System.out.println("Step()");
+       System.out.println("Emulator Step()");
       _Num1 = (_Num1 == 0) ? 1:_Num1;
       for(int i=0; i<_Num1; i++)
       {

@@ -22,12 +22,14 @@ public class Mips_Pipeline_Simulator {
 
    private int [] _RegMem;
    private int [] _DataMem;
-   private List<String> _pipelineRegMem;
+   private List<String> _PipelineRegMem;
 
    private int _Num1,_Num2;
 
    private Parser _myParser;
    private Emulator_FSM _myEmulator;
+
+   boolean _OK_TO_STEP;
 
    // CONSTRUCTOR
 
@@ -131,24 +133,38 @@ public class Mips_Pipeline_Simulator {
 
    private void step() {
    // s {num1}
-       System.out.println("Step()");
+       System.out.println("Simulator Step()");
+       // Check is there a valid _Num1 ?
       _Num1 = (_Num1 == 0) ? 1:_Num1;
+
+      // Setup
+      String currentCommand = this.getCurrentCommand();
+      List<String> nextCommands = this.getNextCommands();
+      boolean branchTakenFlag = false;
+      boolean jumpFlag        = false;
+      boolean loadWordFlag    = false;
+
       for(int i=0; i<_Num1; i++)
       {
-         // 1) Store current command token
-         String currentCommand = this.getCurrentCommand();
-         // 2) call emulator step
-         _myEmulator.step();
-         // 3) Store next 3 command tokens
-         List<String> nextCommands = this.getNextCommands();
-         // 4) Store Edge Case Flags
-         boolean branchTakenFlag = _myEmulator.getBranchTakenFlag();
-         boolean jumpFlag        = _myEmulator.getJumpFlag();
-         boolean loadWordFlag    = _myEmulator.getLoadWordFlag();
+         if(_OK_TO_STEP)
+         {
+            // 1) Store current command token
+            currentCommand = this.getCurrentCommand();
+            // 2) call emulator step
+            _myEmulator.step();
+            // 3) Store next 3 command tokens
+            nextCommands = this.getNextCommands();
+            // 4) Store Edge Case Flags
+            branchTakenFlag = _myEmulator.getBranchTakenFlag();
+            jumpFlag        = _myEmulator.getJumpFlag();
+            loadWordFlag    = _myEmulator.getLoadWordFlag();
+         }
          // 5) Call Yus function step()
+         _OK_TO_STEP = this.stepCycle(currentCommand,nextCommands, branchTakenFlag, jumpFlag, loadWordFlag);
          // 6) Update Stage
          _CurrentStage = this.getNextStage();
-      } 
+         this.showPipelineState();
+      }
    }
 
    private void run() {
@@ -167,6 +183,8 @@ public class Mips_Pipeline_Simulator {
 
   private void showPipelineState() {
    // p
+   
+      System.out.println(_PipelineRegMem);
    }
 
    private void printDataMem() {
@@ -177,10 +195,10 @@ public class Mips_Pipeline_Simulator {
 
    private void clearAll() {
    // c
-       //System.out.println("clearAll()");
-       _myEmulator.clearAll();
-       this.initStages();
-      _pipelineRegMem = new ArrayList<String>(5);
+      //System.out.println("clearAll()");
+      _myEmulator.clearAll();
+      this.initStages();
+      _OK_TO_STEP = true;
    }
    
    private void exit() {
@@ -189,18 +207,12 @@ public class Mips_Pipeline_Simulator {
       this._NextState = fsmState.EXIT;
    }
 
-   private void initStages() {
-      _pipelineRegMem = new ArrayList<String>(5);
-      for(int i=0;i < 5; i++) {
-         _pipelineRegMem.add("empty");
-      }
-   }
-
    private List<String> getNextCommands() {
    // returns array list consisting of up to 3 next tokens
       List<String> nextCommands = new ArrayList<String>();
       int tempPC = _myEmulator.getPC() + 1;
-      for(int i=0; tempPC < _AssemblyCode.size() && i<3; i++) {
+      for(int i=0; tempPC < _AssemblyCode.size()-1 && i<3; i++) {
+         System.out.println("tempPC = " + Integer.toString(tempPC));
          tempPC++;
          nextCommands.add(_AssemblyCode.get(tempPC).get(0));
       }
@@ -209,7 +221,10 @@ public class Mips_Pipeline_Simulator {
 
    private String getCurrentCommand() {
       int tempPC = _myEmulator.getPC();
-      return _AssemblyCode.get(tempPC).get(0);
+      if(tempPC < _AssemblyCode.size()) {
+         return _AssemblyCode.get(tempPC).get(0);
+      }
+      else { return "empty"; }
    }
 
    private pipelineStage getNextStage() {
@@ -219,5 +234,122 @@ public class Mips_Pipeline_Simulator {
       else if (_CurrentStage == pipelineStage.id_exe  ) { nextStage = pipelineStage.exe_mem; }
       else if (_CurrentStage == pipelineStage.if_id   ) { nextStage = pipelineStage.id_exe;  }
       return nextStage;
+   }
+
+   private void initStages() {
+      _PipelineRegMem = new ArrayList<String>(5);
+      _PipelineRegMem.add("0");
+      for(int i=0;i < 5; i++) {
+         _PipelineRegMem.add("empty");
+      }
+   }
+
+   // YU's Cycle Step Function
+
+   private boolean stepCycle(
+      String currentCommand,
+      List<String> nextCommands,
+      boolean branchTakenFlag,
+      boolean jumpFlag,
+      boolean loadWordFlag)
+   {
+      int PC = _myEmulator.getPC() - 1;
+      List<String> _5Stages = new ArrayList<String>(5);
+
+      if(PC < _AssemblyCode.size())
+      {
+         if (branchTakenFlag){
+            // edge case
+            System.out.println("Branch Taken");
+            updatePipeline(currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
+            //set next instruction to current
+            currentCommand = nextCommands.get(0); 
+            nextCommands.remove(0);
+            if (_CurrentStage == pipelineStage.mem_wb) {// reset after you moved it 
+               branchTakenFlag = false;                                   // not exectuting following 3 commands;
+            }
+         }
+         else if (jumpFlag) {
+            // edge case
+            System.out.println("Jump");
+            updatePipeline(currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
+            if (_CurrentStage == pipelineStage.id_exe) {// reset after you moved it 
+               jumpFlag = false;
+            }
+         }
+         else if (loadWordFlag) {
+            // edge case
+            System.out.println("Load Word");
+            updatePipeline(currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
+            // set next instruction to current
+            currentCommand = nextCommands.get(0);
+            nextCommands.remove(0);
+            if (_CurrentStage == pipelineStage.exe_mem) {  // reset
+               loadWordFlag = false;
+            }
+         }
+         else {
+            // default
+            System.out.println("default");
+            updatePipeline(currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
+         }
+         if (branchTakenFlag || jumpFlag || loadWordFlag) {
+            return false;
+         }
+         else {
+            return true;
+         }
+      } // _PC >= _AssemblyCode.size()
+      else { return false; }
+   }
+   
+   public void updatePipeline(
+      String currentCommand,
+      boolean branchTakenFlag,
+      boolean jumpFlag,
+      boolean loadWordFlag)
+   {
+      System.out.println("updatePipeline");
+      int PC = _myEmulator.getPC();
+      _PipelineRegMem.set(0,Integer.toString(Integer.parseInt(_PipelineRegMem.get(0)) + 1));
+      // Branch
+      if (branchTakenFlag && _CurrentStage == pipelineStage.exe_mem) { //checks before moves
+         _PipelineRegMem.set(4,_PipelineRegMem.get(3)); 
+         _PipelineRegMem.set(1,"squash");
+         _PipelineRegMem.set(2,"squash");
+         _PipelineRegMem.set(3,"squash");
+         _PipelineRegMem.set(0,Integer.toString(PC));  //set to the given immed PC 
+      }
+      // Jump
+      else if (jumpFlag && _CurrentStage == pipelineStage.if_id){  //checks before moves
+         shiftRight();         
+         _PipelineRegMem.set(1,"squash");
+         _PipelineRegMem.set(0,Integer.toString(PC)); //set to the given immed PC 
+      }
+      // LW
+      else if (loadWordFlag && _CurrentStage == pipelineStage.id_exe){ //checks before moves
+         shiftRight();
+         _PipelineRegMem.set(1,_PipelineRegMem.get(2)); //currentCommand?
+         _PipelineRegMem.set(2,"stall");
+         _PipelineRegMem.set(0,Integer.toString(PC));  //set to the PC before   
+      }
+      // Default
+      else {
+         shiftRight();
+         _PipelineRegMem.set(1,currentCommand);
+         if (branchTakenFlag || jumpFlag || loadWordFlag) {                  // on the sqaush/stall time 
+            _PipelineRegMem.set(0,Integer.toString(Integer.parseInt(_PipelineRegMem.get(0)) + 1));  //increment PC manually
+         }
+         else {
+            _PipelineRegMem.set(0,Integer.toString(PC));   // regular times, just get the PC received from fsm 
+         }
+      }
+   }
+
+   public void shiftRight() {
+      System.out.println("shiftRight()");
+      for (int index = _PipelineRegMem.size()-2; index >= 1; index --) {
+         _PipelineRegMem.set(index+1,_PipelineRegMem.get(index));
+      }
    }
 }
