@@ -25,7 +25,7 @@ public class Emulator_FSM {
    private Parser _myParser;
 
    // Edge Case Error Flags, needed by pipeline simulator
-   int _PrevDestReg = -1;
+   int _PrevDestReg;
    boolean _BranchTakenFlag =  false;
    boolean _JumpFlag =  false;
    boolean _LoadWordFlag =  false;

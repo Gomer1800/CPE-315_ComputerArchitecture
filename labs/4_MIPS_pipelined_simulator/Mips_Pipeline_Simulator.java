@@ -168,6 +168,7 @@ public class Mips_Pipeline_Simulator {
          // 6) Update Stage
          _CurrentStage = this.getNextStage();
          this.showPipelineState();
+         this.printPerformance();
       }
    }
 
@@ -206,7 +207,7 @@ public class Mips_Pipeline_Simulator {
    private void printPerformance() {
       System.out.println("Program complete");
       System.out.format("CPI = %f Cycles = %d Instructions = %d\n",
-      ((double)_NumInst)/_NumCycles,_NumCycles,_NumInst);
+      ((double)_NumCycles)/_NumInst,_NumCycles,_NumInst);
    }
 
    private void dumpRegState() {
@@ -273,9 +274,9 @@ public class Mips_Pipeline_Simulator {
    }
 
    private void initStages() {
-      _PipelineRegMem = new ArrayList<String>(5);
+      _PipelineRegMem = new ArrayList<String>();
       _PipelineRegMem.add("0");
-      for(int i=0;i < 5; i++) {
+      for(int i=1;i < 5; i++) {
          _PipelineRegMem.add("empty");
       }
    }
@@ -290,7 +291,6 @@ public class Mips_Pipeline_Simulator {
       boolean loadWordFlag)
    {
       int PC = _myEmulator.getPC() - 1;
-      List<String> _5Stages = new ArrayList<String>(5);
 
       if(!_PipelineRegMem.get(4).equals("squash") &&
          !_PipelineRegMem.get(4).equals("stall") &&
@@ -298,6 +298,8 @@ public class Mips_Pipeline_Simulator {
       {
          _NumInst++;
       }
+      System.out.format("branch = %b, jump = %b, lw = %b\n"
+         , branchTakenFlag,jumpFlag,loadWordFlag);
       if(PC < _AssemblyCode.size())
       {
          if (branchTakenFlag){
@@ -399,7 +401,7 @@ public class Mips_Pipeline_Simulator {
    }
 
    private boolean checkPipelineEmpty() {
-      for(int i=1; i<=5; i++) {
+      for(int i=1; i<5; i++) {
          if(!_PipelineRegMem.get(i).equals("empty") &&
             !_PipelineRegMem.get(i).equals("squash") &&
             !_PipelineRegMem.get(i).equals("stall")) 

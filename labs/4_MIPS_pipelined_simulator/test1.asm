@@ -1,26 +1,53 @@
-# This is test program 1.  This program does nothing useful.
-# # # # #### # #
+# lab4_test1.asm
+#
+# CPI = 1.400	cycles = 42	instructions = 30
 
-   add   $s0, $0, $zero
-   addi  $t0, $t0, 100#test comment
-   addi  $a0, $a0,100
-test: 
-   add   $s0, $s0, $a0 # this is a comment
-   addi  $a0, $a0, -1
-   bne   $a0, $0, test # this is another comment
-   addi  $a0, $a0, 100
+# instructions with rd as destination
+	
+lw $a0, 0($a1)	
+add $t0, $a0, $a1	# stall
 
-test1: 
-   #test comment
+lw $a0, 0($a1)
+add $t0, $a1, $a0	# stall
 
-   lw    $a0, 8($a1)
-   sw    $a0,4($a1)
-   j     test1      
-   jr    $ra
-   jal   test1
-   slt   $t0,$a0,$a1
-   beq   $t0,$t1,test
-   sub   $t3, $t1, $t1
+lw $a0, 0($a1)
+add $t0, $t0, $t0	# no stall
 
-   sll   $a0, $a1, 2
+lw $a0, 0($a1)
+sub $t0, $a1, $a0	# stall
 
+lw $a0, 0($a1)
+sub $t0, $a0, $a1	# stall
+
+lw $a0, 0($a1)	
+sub $t0, $t0, $t0	# no stall
+
+lw $a0, 0($a1)		
+slt $t0, $a0, $a1	# stall
+
+lw $a0, 0($a1)
+slt $t0, $a1, $a0	# stall
+
+lw $a0, 0($a1)
+slt $t0, $t0, $t0	# no stall
+
+# instructions with rt as destination
+
+lw $a0, 0($a1)		# no stall
+addi $t0, $a1, 1
+
+lw $a0, 0($a1)		# stall
+addi $t0, $a0, 1
+
+lw $a0, 0($a1)		# no stall
+addi $a0, $t0, 1
+
+lw $a0, 0($a1)	
+lw $a0, 0($a1)		# no stall
+
+lw $a0, 0($a1)
+lw $a1, 0($a0)		# stall
+
+lw $0, 0($s1)		# no stall
+add $s2, $s1, $0
+	
