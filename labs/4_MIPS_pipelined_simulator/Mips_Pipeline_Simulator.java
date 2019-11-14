@@ -35,6 +35,7 @@ public class Mips_Pipeline_Simulator {
    // PERFORMANCE VARIABLES
    int _NumInst;
    int _NumCycles;
+   int _OldPC;
 
    // Edge Case Flags
    // TODO (Luis): Fix names
@@ -149,21 +150,20 @@ public class Mips_Pipeline_Simulator {
       _Num1 = (_Num1 == 0) ? 1:_Num1;
 
       // Setup
-      int OLD_PC = 0;
       String currentCommand = this.getCurrentCommand();
       List<String> nextCommands = this.getNextCommands();
 
       for(int i=0; i<_Num1; i++)
       {
-         OLD_PC = _myEmulator.getPC();
-         System.out.format("OLD PC = %d\n", OLD_PC);
+         _OldPC = _myEmulator.getPC();
+         System.out.format("OLD PC = %d\n", _OldPC);
          if(_OK_TO_STEP)
          {
             // 1) Store current command token
             currentCommand = this.getCurrentCommand();
             // 2) call emulator step
             _myEmulator.step();
-            System.out.format("OLD PC AFTER STEP = %d\n", OLD_PC);
+            System.out.format("OLD PC AFTER STEP = %d\n", _OldPC);
             // 3) Store next 3 command tokens
             nextCommands = this.getNextCommands();
             // 4) Store Edge Case Flags
@@ -172,7 +172,7 @@ public class Mips_Pipeline_Simulator {
             loadWordFlag    = _myEmulator.getLoadWordFlag();
          }
          // 5) Call Yus function step()
-         _OK_TO_STEP = this.stepCycle(OLD_PC,currentCommand,nextCommands, branchTakenFlag, jumpFlag, loadWordFlag);
+         _OK_TO_STEP = this.stepCycle(_OldPC,currentCommand,nextCommands, branchTakenFlag, jumpFlag, loadWordFlag);
          // 6) Update Stage
          _CurrentStage = this.getNextStage();
          this.showPipelineState();
@@ -249,6 +249,7 @@ public class Mips_Pipeline_Simulator {
       branchTakenFlag = false;
       jumpFlag = false;
       loadWordFlag = false;
+      _OldPC = 0;
    }
    
    private void exit() {
@@ -261,7 +262,7 @@ public class Mips_Pipeline_Simulator {
    // returns array list consisting of up to 3 next tokens
       System.out.println("\ngetNextCommands()");
       List<String> nextCommands = new ArrayList<String>();
-      int tempPC = _myEmulator.getPC() + 1;
+      int tempPC = _OldPC + 0;
       for(int i=0; tempPC < _AssemblyCode.size()-1 && i<3; i++) {
          System.out.println("tempPC = " + Integer.toString(tempPC));
          tempPC++;
