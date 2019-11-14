@@ -12,6 +12,9 @@ CLASSES = \
         Mips_Filter.java \
         Mips_Parser.java \
         readFile.java \
+        Emulator_FSM.java \
+        Emulator_Assembly_Decoder.java \
+        Mips_Pipeline_Simulator.java \
 
 default: classes
 
