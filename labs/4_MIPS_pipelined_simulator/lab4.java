@@ -1,8 +1,11 @@
 /*
 Name: Luis Gomez, Yu Asai
 Section: 1
-Description: Mips Emulator
-Composed of 4 Modules and 2 Helper Classes
+Description: Mips Simulator
+
+Composed of FSM to manage I/O
+& Emulator which manages edge case flags
+& Simulator which manages the pipeline
 
 Module
 1: File Reader
@@ -41,7 +44,7 @@ public class lab4 {
       myFilter.set_list( rawAssembly ); 
       myFilter.tokenize();
       List<List<String>> filteredAssembly = myFilter.get_list();
-      myFilter.print();
+      //myFilter.print();
 
       // Stage 3, parse tokenized assembly array.
       // Remove Labels, creating label dictionary
@@ -81,7 +84,7 @@ public class lab4 {
       
       myScriptParser.tokenize(lineList);
       /* print tokenized List */
-      myScriptParser.print();
+      //myScriptParser.print();
  
       // EMULATOR
 

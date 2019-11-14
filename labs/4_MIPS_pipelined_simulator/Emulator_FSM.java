@@ -139,7 +139,7 @@ public class Emulator_FSM {
 
    public void step() {
    // s {num1}
-       System.out.println("Emulator Step()");
+      //System.out.println("Emulator Step()");
       _Num1 = (_Num1 == 0) ? 1:_Num1;
       for(int i=0; i<_Num1; i++)
       {
@@ -185,7 +185,7 @@ public class Emulator_FSM {
 
    public void printDataMem() {
    // m num1 num2
-      System.out.println("\nprintMem()");
+    //System.out.println("\nprintMem()");
       int i = this._Num1;
       int xMin = this._Num1 % 192;
       int xMax = this._Num2 % 192;
@@ -251,14 +251,14 @@ public class Emulator_FSM {
 
       if (inst.equals("addi")) {
       // rt = rs + immed
-         System.out.println("addi " + assemblyCode.get(2) + " = " + assemblyCode.get(1) + " + " + assemblyCode.get(3));
+         //System.out.println("addi " + assemblyCode.get(2) + " = " + assemblyCode.get(1) + " + " + assemblyCode.get(3));
          int rt    = regMem[Helpers._RegNum(assemblyCode.get(1))];
          int rs    = regMem[Helpers._RegNum(assemblyCode.get(2))];
          int immed = Integer.parseInt(assemblyCode.get(3));
          regMem[Helpers._RegNum(assemblyCode.get(1))] = rs + immed;
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
-            System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(2)),Helpers._RegNum(assemblyCode.get(1)));
+            //System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(2)),Helpers._RegNum(assemblyCode.get(1)));
             _LoadWordFlag = (_PrevDestReg == Helpers._RegNum(assemblyCode.get(2))) ? true:
             ((_PrevDestReg == (Helpers._RegNum(assemblyCode.get(1)))) ? true:false);
             _PrevDestReg = -1;
@@ -268,14 +268,14 @@ public class Emulator_FSM {
 
       else if (inst.equals("beq")) {
       // offset if rs == rt 
-         System.out.println("beq " + assemblyCode.get(1) + " == " + assemblyCode.get(2) + ", relative offset = " + assemblyCode.get(3));
+         //System.out.println("beq " + assemblyCode.get(1) + " == " + assemblyCode.get(2) + ", relative offset = " + assemblyCode.get(3));
          int rs    = regMem[Helpers._RegNum(assemblyCode.get(1))];
          int rt    = regMem[Helpers._RegNum(assemblyCode.get(2))];
          int immed = Integer.parseInt(assemblyCode.get(3));
-         System.out.format("rs = %d == rt = %d\n",rs,rt);
+         //System.out.format("rs = %d == rt = %d\n",rs,rt);
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
-            System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(2)),Helpers._RegNum(assemblyCode.get(1)));
+            //System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(2)),Helpers._RegNum(assemblyCode.get(1)));
             _LoadWordFlag = ((_PrevDestReg == Helpers._RegNum(assemblyCode.get(1))) ? true:
             (_PrevDestReg == Helpers._RegNum(assemblyCode.get(2))) ? true:false);
             _PrevDestReg = -1;
@@ -295,7 +295,7 @@ public class Emulator_FSM {
          int immed = Integer.parseInt(assemblyCode.get(3));
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
-            System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(2)),Helpers._RegNum(assemblyCode.get(1)));
+            //System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(2)),Helpers._RegNum(assemblyCode.get(1)));
             _LoadWordFlag = ((_PrevDestReg == Helpers._RegNum(assemblyCode.get(1))) ? true:
             (_PrevDestReg == Helpers._RegNum(assemblyCode.get(2))) ? true:false);
             _PrevDestReg = -1;
@@ -315,7 +315,7 @@ public class Emulator_FSM {
          regMem[Helpers._RegNum(assemblyCode.get(1))] = rs + rt;
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
-            System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(3)),Helpers._RegNum(assemblyCode.get(2)));
+            ///System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(3)),Helpers._RegNum(assemblyCode.get(2)));
             _LoadWordFlag = ((_PrevDestReg == Helpers._RegNum(assemblyCode.get(2))) ? true:
             (_PrevDestReg == Helpers._RegNum(assemblyCode.get(3))) ? true:false);
             _PrevDestReg = -1;
@@ -331,7 +331,7 @@ public class Emulator_FSM {
          regMem[Helpers._RegNum(assemblyCode.get(1))] = rs - rt;
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
-            System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(3)),Helpers._RegNum(assemblyCode.get(2)));
+            //System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(3)),Helpers._RegNum(assemblyCode.get(2)));
             _LoadWordFlag = ((_PrevDestReg == Helpers._RegNum(assemblyCode.get(2))) ? true:
             (_PrevDestReg == Helpers._RegNum(assemblyCode.get(3))) ? true:false);
             _PrevDestReg = -1;
@@ -347,7 +347,7 @@ public class Emulator_FSM {
          regMem[Helpers._RegNum(assemblyCode.get(1))] = rs & rt;
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
-            System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(3)),Helpers._RegNum(assemblyCode.get(2)));
+            //System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(3)),Helpers._RegNum(assemblyCode.get(2)));
             _LoadWordFlag = ((_PrevDestReg == Helpers._RegNum(assemblyCode.get(2))) ? true:
             (_PrevDestReg == Helpers._RegNum(assemblyCode.get(3))) ? true:false);
             _PrevDestReg = -1;
@@ -363,7 +363,7 @@ public class Emulator_FSM {
          regMem[Helpers._RegNum(assemblyCode.get(1))] = rs | rt;
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
-            System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(3)),Helpers._RegNum(assemblyCode.get(2)));
+            //System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(3)),Helpers._RegNum(assemblyCode.get(2)));
             _LoadWordFlag = ((_PrevDestReg == Helpers._RegNum(assemblyCode.get(2))) ? true:
             (_PrevDestReg == Helpers._RegNum(assemblyCode.get(3))) ? true:false);
             _PrevDestReg = -1;
@@ -384,7 +384,7 @@ public class Emulator_FSM {
          }
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
-            System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(3)),Helpers._RegNum(assemblyCode.get(2)));
+            //System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(3)),Helpers._RegNum(assemblyCode.get(2)));
             _LoadWordFlag = ((_PrevDestReg == Helpers._RegNum(assemblyCode.get(2))) ? true:
             (_PrevDestReg == Helpers._RegNum(assemblyCode.get(3))) ? true:false);
             _PrevDestReg = -1;
@@ -407,7 +407,7 @@ public class Emulator_FSM {
          _JumpFlag = true;
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
-            System.out.format("prevRd = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(1)));
+            //System.out.format("prevRd = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(1)));
             _LoadWordFlag = ((_PrevDestReg == Helpers._RegNum(assemblyCode.get(1))) ? true:false);
             _PrevDestReg = -1;
          }
@@ -431,7 +431,7 @@ public class Emulator_FSM {
          regMem[Helpers._RegNum(assemblyCode.get(1))] = rt << shamt;
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
-            System.out.format("prevRd = %d rt = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(2)));
+            //System.out.format("prevRd = %d rt = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(2)));
             _LoadWordFlag = ((_PrevDestReg == Helpers._RegNum(assemblyCode.get(2))) ? true:false);
             _PrevDestReg = -1;
          }
@@ -456,7 +456,7 @@ public class Emulator_FSM {
          rt = regMem[rs + immed];
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
-            System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(1)),Helpers._RegNum(assemblyCode.get(3)));
+           // System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(1)),Helpers._RegNum(assemblyCode.get(3)));
             _LoadWordFlag = (_PrevDestReg == Helpers._RegNum(assemblyCode.get(1))) ? true:
             ((_PrevDestReg == (Helpers._RegNum(assemblyCode.get(3)))) ? true:false);
             _PrevDestReg = -1;
