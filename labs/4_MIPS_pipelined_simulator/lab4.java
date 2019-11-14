@@ -41,7 +41,7 @@ public class lab4 {
       myFilter.set_list( rawAssembly ); 
       myFilter.tokenize();
       List<List<String>> filteredAssembly = myFilter.get_list();
-      //myFilter.print();
+      myFilter.print();
 
       // Stage 3, parse tokenized assembly array.
       // Remove Labels, creating label dictionary
