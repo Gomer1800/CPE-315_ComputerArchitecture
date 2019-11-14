@@ -29,11 +29,18 @@ public class Mips_Pipeline_Simulator {
    private Parser _myParser;
    private Emulator_FSM _myEmulator;
 
-   boolean _OK_TO_STEP;
+   // EMULATOR CONTROL FLAG
+   private boolean _OK_TO_STEP;
 
    // PERFORMANCE VARIABLES
    int _NumInst;
    int _NumCycles;
+
+   // Edge Case Flags
+   // TODO (Luis): Fix names
+   private boolean branchTakenFlag;
+   private boolean jumpFlag;
+   private boolean loadWordFlag;
 
    // CONSTRUCTOR
 
@@ -137,25 +144,26 @@ public class Mips_Pipeline_Simulator {
 
    private void step() {
    // s {num1}
-       System.out.println("Simulator Step()");
+       System.out.println("Simulator Step()****************************");
        // Check is there a valid _Num1 ?
       _Num1 = (_Num1 == 0) ? 1:_Num1;
 
       // Setup
+      int OLD_PC = 0;
       String currentCommand = this.getCurrentCommand();
       List<String> nextCommands = this.getNextCommands();
-      boolean branchTakenFlag = false;
-      boolean jumpFlag        = false;
-      boolean loadWordFlag    = false;
 
       for(int i=0; i<_Num1; i++)
       {
+         OLD_PC = _myEmulator.getPC();
+         System.out.format("OLD PC = %d\n", OLD_PC);
          if(_OK_TO_STEP)
          {
             // 1) Store current command token
             currentCommand = this.getCurrentCommand();
             // 2) call emulator step
             _myEmulator.step();
+            System.out.format("OLD PC AFTER STEP = %d\n", OLD_PC);
             // 3) Store next 3 command tokens
             nextCommands = this.getNextCommands();
             // 4) Store Edge Case Flags
@@ -164,7 +172,7 @@ public class Mips_Pipeline_Simulator {
             loadWordFlag    = _myEmulator.getLoadWordFlag();
          }
          // 5) Call Yus function step()
-         _OK_TO_STEP = this.stepCycle(currentCommand,nextCommands, branchTakenFlag, jumpFlag, loadWordFlag);
+         _OK_TO_STEP = this.stepCycle(OLD_PC,currentCommand,nextCommands, branchTakenFlag, jumpFlag, loadWordFlag);
          // 6) Update Stage
          _CurrentStage = this.getNextStage();
          this.showPipelineState();
@@ -174,17 +182,16 @@ public class Mips_Pipeline_Simulator {
 
    private void run() {
    // r
-       System.out.println("Simulator run()");
+       System.out.println("Simulator run()*****************************");
       // Setup
+      int OLD_PC = 0;
       String currentCommand = this.getCurrentCommand();
       List<String> nextCommands = this.getNextCommands();
-      boolean branchTakenFlag = false;
-      boolean jumpFlag        = false;
-      boolean loadWordFlag    = false;
 
       do {
          if(_OK_TO_STEP)
          {
+            OLD_PC = _myEmulator.getPC();
             // 1) Store current command token
             currentCommand = this.getCurrentCommand();
             // 2) call emulator step
@@ -197,7 +204,7 @@ public class Mips_Pipeline_Simulator {
             loadWordFlag    = _myEmulator.getLoadWordFlag();
          }
          // 5) Call Yus function step()
-         _OK_TO_STEP = this.stepCycle(currentCommand,nextCommands, branchTakenFlag, jumpFlag, loadWordFlag);
+         _OK_TO_STEP = this.stepCycle(OLD_PC, currentCommand,nextCommands, branchTakenFlag, jumpFlag, loadWordFlag);
          // 6) Update Stage
          _CurrentStage = this.getNextStage();
       } while(this.checkPipelineEmpty() == false);
@@ -236,6 +243,10 @@ public class Mips_Pipeline_Simulator {
       _OK_TO_STEP = true;
       _NumInst = 0;
       _NumCycles = 0;
+      // TODO (Luis): fix these names please!
+      branchTakenFlag = false;
+      jumpFlag = false;
+      loadWordFlag = false;
    }
    
    private void exit() {
@@ -284,14 +295,16 @@ public class Mips_Pipeline_Simulator {
    // YU's Cycle Step Function
 
    private boolean stepCycle(
+      int OLD_PC,
       String currentCommand,
       List<String> nextCommands,
       boolean branchTakenFlag,
       boolean jumpFlag,
       boolean loadWordFlag)
    {
-      int PC = _myEmulator.getPC() - 1;
-
+      int PC = OLD_PC;
+      System.out.println("CURRENT COMMAND " + currentCommand);
+      System.out.format("PC = %d\n", PC);
       if(!_PipelineRegMem.get(4).equals("squash") &&
          !_PipelineRegMem.get(4).equals("stall") &&
          !_PipelineRegMem.get(4).equals("empty"))
@@ -305,9 +318,9 @@ public class Mips_Pipeline_Simulator {
          if (branchTakenFlag){
             // edge case
             System.out.println("Branch Taken");
-            updatePipeline(currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
+            updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
             //set next instruction to current
-            currentCommand = nextCommands.get(0); 
+            currentCommand = nextCommands.get(0);
             nextCommands.remove(0);
             if (_CurrentStage == pipelineStage.mem_wb) {// reset after you moved it 
                branchTakenFlag = false;                                   // not exectuting following 3 commands;
@@ -316,15 +329,17 @@ public class Mips_Pipeline_Simulator {
          else if (jumpFlag) {
             // edge case
             System.out.println("Jump");
-            updatePipeline(currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
-            if (_CurrentStage == pipelineStage.id_exe) {// reset after you moved it 
+            updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
+            if (_CurrentStage == pipelineStage.id_exe) {// reset after you moved it
+               System.out.println("CYCLE JUMP = " + jumpFlag);
                jumpFlag = false;
+               System.out.println("CYCLE JUMP = " + jumpFlag);
             }
          }
          else if (loadWordFlag) {
             // edge case
             System.out.println("Load Word");
-            updatePipeline(currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
+            updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
             // set next instruction to current
             currentCommand = nextCommands.get(0);
             nextCommands.remove(0);
@@ -335,7 +350,7 @@ public class Mips_Pipeline_Simulator {
          else {
             // default
             System.out.println("default");
-            updatePipeline(currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
+            updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
          }
          // Finished 1 Cycle
          _NumCycles++;
@@ -350,17 +365,19 @@ public class Mips_Pipeline_Simulator {
    }
    
    public void updatePipeline(
+      int PC,
       String currentCommand,
       boolean branchTakenFlag,
       boolean jumpFlag,
       boolean loadWordFlag)
    {
       System.out.println("updatePipeline");
-      int PC = _myEmulator.getPC();
+      //int PC = _myEmulator.getPC();
 
       //_PipelineRegMem.set(0,Integer.toString(Integer.parseInt(_PipelineRegMem.get(0)) + 1));
       // Branch
       if (branchTakenFlag && _CurrentStage == pipelineStage.exe_mem) { //checks before moves
+         System.out.println("UPDATE BRANCH");
          _PipelineRegMem.set(4,_PipelineRegMem.get(3)); 
          _PipelineRegMem.set(1,"squash");
          _PipelineRegMem.set(2,"squash");
@@ -368,13 +385,15 @@ public class Mips_Pipeline_Simulator {
          _PipelineRegMem.set(0,Integer.toString(PC));  //set to the given immed PC 
       }
       // Jump
-      else if (jumpFlag && _CurrentStage == pipelineStage.if_id){  //checks before moves
+      else if (jumpFlag && _CurrentStage == pipelineStage.id_exe){  //checks before moves
+         System.out.println("UPDATE JUMP");
          shiftRight();         
          _PipelineRegMem.set(1,"squash");
          _PipelineRegMem.set(0,Integer.toString(PC)); //set to the given immed PC 
       }
       // LW
       else if (loadWordFlag && _CurrentStage == pipelineStage.id_exe){ //checks before moves
+         System.out.println("UPDATE LW");
          shiftRight();
          _PipelineRegMem.set(1,_PipelineRegMem.get(2)); //currentCommand?
          _PipelineRegMem.set(2,"stall");
@@ -382,13 +401,14 @@ public class Mips_Pipeline_Simulator {
       }
       // Default
       else {
+         System.out.println("UPDATE DEFAULT");
          shiftRight();
          _PipelineRegMem.set(1,currentCommand);
          if (branchTakenFlag || jumpFlag || loadWordFlag) {                  // on the sqaush/stall time 
             _PipelineRegMem.set(0,Integer.toString(Integer.parseInt(_PipelineRegMem.get(0)) + 1));  //increment PC manually
          }
          else {
-            _PipelineRegMem.set(0,Integer.toString(PC));   // regular times, just get the PC received from fsm 
+            _PipelineRegMem.set(0,Integer.toString(PC + 1));   // regular times, just get the PC received from fsm 
          }
       }
    }

@@ -1,14 +1,21 @@
-# This is a test program 2.  This program does nothing useful.
+# test2
+# CPI: 1.727 Cycles: 19 Instructions: 11
 
- add    $t0,           $t1, $t2 # more comments
-   add $t3,$t4,$t5 # more comments
-   add $t6, $t7,      $t8
-   sub $t9, $s7, $s6
-      sub $s5, $s5, $s4
-   sub $s3, $s2, $s1 
+j next		# 1 cycle penalty
+equal1:	add $a0, $0, $0
 
-   
-   bne $sp, $ra, test2  
-test2: 
-add $ra, $ra, $a1 # comment on label
-   beq $a0, $a1, test2
+next:	addi $a0, $0, 100
+	addi $a1, $0, 101
+	beq $a0, $a1, equal1	# fall through
+	addi $a0, $0, 101
+	beq $a0, $a1, equal2	# taken branch
+	lw $a0, 0($0)
+	lw $a0, 0($0)
+	lw $a0, 0($0)
+
+equal2:	add $a0, $0, $0
+  add $a0, $0, $0
+  add $a0, $0, $0
+  add $a0, $0, $0
+  add $a0, $0, $0
+	
