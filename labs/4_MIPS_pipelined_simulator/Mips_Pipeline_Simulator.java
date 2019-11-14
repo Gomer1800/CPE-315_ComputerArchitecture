@@ -340,15 +340,15 @@ public class Mips_Pipeline_Simulator {
                updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag, nextCommands.size());
             }
             else {
-               updatePipeline(PC, nextCommands.remove(0), branchTakenFlag, jumpFlag, loadWordFlag, nextCommands.size());
                branchCounter++;
+               updatePipeline(PC, nextCommands.remove(0), branchTakenFlag, jumpFlag, loadWordFlag, nextCommands.size());
             }
             //set next instruction to current
             //currentCommand = nextCommands.get(0);
             System.out.println("New command " + currentCommand);
             System.out.println("Next commands " + nextCommands);
             //nextCommands.remove(0);
-            if (_CurrentStage == pipelineStage.mem_wb && branchCounter == 3) {// reset after you moved it 
+            if (branchCounter == 3 ) {// reset after you moved it 
                branchTakenFlag = false;                                // not exectuting following 3 commands;
             }
          }
@@ -407,7 +407,8 @@ public class Mips_Pipeline_Simulator {
 
       //_PipelineRegMem.set(0,Integer.toString(Integer.parseInt(_PipelineRegMem.get(0)) + 1));
       // Branch
-      if (branchTakenFlag && _CurrentStage == pipelineStage.mem_wb && commandsAvailable == 1) { //checks before moves
+      System.out.format("branchCounter = %d\n", branchCounter);
+      if (branchTakenFlag && branchCounter == 3) { //checks before moves
          System.out.println("UPDATE BRANCH");
          _PipelineRegMem.set(4,_PipelineRegMem.get(3)); 
          _PipelineRegMem.set(1,"squash");
@@ -433,6 +434,7 @@ public class Mips_Pipeline_Simulator {
       // Default
       else {
          System.out.println("UPDATE DEFAULT");
+         System.out.println("commands avail " + commandsAvailable);
          shiftRight();
          _PipelineRegMem.set(1,currentCommand);
          System.out.println("Update: Current Command " + currentCommand);
