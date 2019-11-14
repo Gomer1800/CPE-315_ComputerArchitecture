@@ -39,9 +39,11 @@ public class Mips_Pipeline_Simulator {
 
    // Edge Case Flags
    // TODO (Luis): Fix names
+   int branchCounter;
    private boolean branchTakenFlag;
    private boolean jumpFlag;
    private boolean loadWordFlag;
+   List<String> nextCommands;
 
    // CONSTRUCTOR
 
@@ -151,7 +153,6 @@ public class Mips_Pipeline_Simulator {
 
       // Setup
       String currentCommand = this.getCurrentCommand();
-      List<String> nextCommands = this.getNextCommands();
 
       for(int i=0; i<_Num1; i++)
       {
@@ -250,6 +251,8 @@ public class Mips_Pipeline_Simulator {
       jumpFlag = false;
       loadWordFlag = false;
       _OldPC = 0;
+      branchCounter = 0;
+      nextCommands = this.getNextCommands();
    }
    
    private void exit() {
@@ -281,11 +284,20 @@ public class Mips_Pipeline_Simulator {
    }
 
    private pipelineStage getNextStage() {
+      System.out.print("\nCurrent Stage = ");
       pipelineStage nextStage = pipelineStage.if_id;
-      if      (_CurrentStage == pipelineStage.mem_wb  ) { nextStage = pipelineStage.if_id;   }
-      else if (_CurrentStage == pipelineStage.exe_mem ) { nextStage = pipelineStage.mem_wb;  }
-      else if (_CurrentStage == pipelineStage.id_exe  ) { nextStage = pipelineStage.exe_mem; }
-      else if (_CurrentStage == pipelineStage.if_id   ) { nextStage = pipelineStage.id_exe;  }
+      if      (_CurrentStage == pipelineStage.mem_wb  ) {
+         System.out.println("EXE/MEM");
+         nextStage = pipelineStage.if_id;   }
+      else if (_CurrentStage == pipelineStage.exe_mem ) { 
+         System.out.println("ID/EXE");
+         nextStage = pipelineStage.mem_wb;  }
+      else if (_CurrentStage == pipelineStage.id_exe  ) {
+         System.out.println("IF/ID");
+         nextStage = pipelineStage.exe_mem; }
+      else if (_CurrentStage == pipelineStage.if_id   ) {
+         System.out.println("INIT OR MEM/WB");
+         nextStage = pipelineStage.id_exe;  }
       return nextStage;
    }
 
@@ -324,20 +336,26 @@ public class Mips_Pipeline_Simulator {
          if (branchTakenFlag){
             // edge case
             System.out.println("Branch Taken");
-            updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
+            if(_OK_TO_STEP) {
+               updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag, nextCommands.size());
+            }
+            else {
+               updatePipeline(PC, nextCommands.remove(0), branchTakenFlag, jumpFlag, loadWordFlag, nextCommands.size());
+               branchCounter++;
+            }
             //set next instruction to current
-            currentCommand = nextCommands.get(0);
+            //currentCommand = nextCommands.get(0);
             System.out.println("New command " + currentCommand);
             System.out.println("Next commands " + nextCommands);
-            nextCommands.remove(0);
-            if (_CurrentStage == pipelineStage.mem_wb) {// reset after you moved it 
-               branchTakenFlag = false;                                   // not exectuting following 3 commands;
+            //nextCommands.remove(0);
+            if (_CurrentStage == pipelineStage.mem_wb && branchCounter == 3) {// reset after you moved it 
+               branchTakenFlag = false;                                // not exectuting following 3 commands;
             }
          }
          else if (jumpFlag) {
             // edge case
             System.out.println("Jump");
-            updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
+            updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag, nextCommands.size());
             if (_CurrentStage == pipelineStage.id_exe) {// reset after you moved it
                System.out.println("CYCLE JUMP = " + jumpFlag);
                jumpFlag = false;
@@ -347,7 +365,7 @@ public class Mips_Pipeline_Simulator {
          else if (loadWordFlag) {
             // edge case
             System.out.println("Load Word");
-            updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
+            updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag, nextCommands.size());
             // set next instruction to current
             currentCommand = nextCommands.get(0);
             nextCommands.remove(0);
@@ -358,14 +376,18 @@ public class Mips_Pipeline_Simulator {
          else {
             // default
             System.out.println("default");
-            updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
+            updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag, nextCommands.size());
          }
+
          // Finished 1 Cycle
          _NumCycles++;
+         
          if (branchTakenFlag || jumpFlag || loadWordFlag) {
+            System.out.println("STALL");
             return false;
          }
          else {
+            System.out.println("NO STALL");
             return true;
          }
       } // _PC >= _AssemblyCode.size()
@@ -377,14 +399,15 @@ public class Mips_Pipeline_Simulator {
       String currentCommand,
       boolean branchTakenFlag,
       boolean jumpFlag,
-      boolean loadWordFlag)
+      boolean loadWordFlag,
+      int commandsAvailable)
    {
       System.out.println("\nupdatePipeline()");
       //int PC = _myEmulator.getPC();
 
       //_PipelineRegMem.set(0,Integer.toString(Integer.parseInt(_PipelineRegMem.get(0)) + 1));
       // Branch
-      if (branchTakenFlag && _CurrentStage == pipelineStage.mem_wb && !currentCommand.equals("beq") && !currentCommand.equals("bne")) { //checks before moves
+      if (branchTakenFlag && _CurrentStage == pipelineStage.mem_wb && commandsAvailable == 1) { //checks before moves
          System.out.println("UPDATE BRANCH");
          _PipelineRegMem.set(4,_PipelineRegMem.get(3)); 
          _PipelineRegMem.set(1,"squash");
@@ -412,7 +435,11 @@ public class Mips_Pipeline_Simulator {
          System.out.println("UPDATE DEFAULT");
          shiftRight();
          _PipelineRegMem.set(1,currentCommand);
-         if (branchTakenFlag || jumpFlag || loadWordFlag) {                  // on the sqaush/stall time 
+         System.out.println("Update: Current Command " + currentCommand);
+         if(branchTakenFlag) {
+            _PipelineRegMem.set(0,Integer.toString(Integer.parseInt(_PipelineRegMem.get(0)) + 1));
+         }
+         else if (jumpFlag || loadWordFlag) {                  // on the sqaush/stall time 
             _PipelineRegMem.set(0,Integer.toString(Integer.parseInt(_PipelineRegMem.get(0)) + 1));  //increment PC manually
          }
          else {
