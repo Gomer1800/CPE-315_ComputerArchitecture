@@ -181,7 +181,7 @@ public class Mips_Pipeline_Simulator {
             // 6) Update Stage
             _CurrentStage = this.getNextStage();
             this.showPipelineState();
-            this.printPerformance();
+            //this.printPerformance();
          }
    }
 
@@ -194,24 +194,31 @@ public class Mips_Pipeline_Simulator {
       List<String> nextCommands = this.getNextCommands();
 
       do {
-         if(_OK_TO_STEP)
-         {
-            OLD_PC = _myEmulator.getPC();
+            if(Finished) {
+               currentCommand = this.getCurrentCommand();
+            }
+            _OldPC = _myEmulator.getPC();
+            System.out.format("OLD PC = %d\n", _OldPC);
+            if(_OK_TO_STEP)
+            {
+               // 2) call emulator step
+               _myEmulator.step();
+               System.out.format("OLD PC AFTER STEP = %d\n", _OldPC);
+               // 3) Store next 3 command tokens
+               nextCommands = this.getNextCommands();
+               // 4) Store Edge Case Flags
+               branchTakenFlag = _myEmulator.getBranchTakenFlag();
+               jumpFlag        = _myEmulator.getJumpFlag();
+               loadWordFlag    = _myEmulator.getLoadWordFlag();
+            }
+            // 5) Call Yus function step()
+            _OK_TO_STEP = this.stepCycle(_OldPC,currentCommand,nextCommands, branchTakenFlag, jumpFlag, loadWordFlag);
             // 1) Store current command token
             currentCommand = this.getCurrentCommand();
-            // 2) call emulator step
-            _myEmulator.step();
-            // 3) Store next 3 command tokens
-            nextCommands = this.getNextCommands();
-            // 4) Store Edge Case Flags
-            branchTakenFlag = _myEmulator.getBranchTakenFlag();
-            jumpFlag        = _myEmulator.getJumpFlag();
-            loadWordFlag    = _myEmulator.getLoadWordFlag();
-         }
-         // 5) Call Yus function step()
-         _OK_TO_STEP = this.stepCycle(OLD_PC, currentCommand,nextCommands, branchTakenFlag, jumpFlag, loadWordFlag);
-         // 6) Update Stage
-         _CurrentStage = this.getNextStage();
+            // 6) Update Stage
+            _CurrentStage = this.getNextStage();
+            this.showPipelineState();
+            //this.printPerformance();
       } while(this.checkPipelineEmpty() == false);
       this.printPerformance();
    }
