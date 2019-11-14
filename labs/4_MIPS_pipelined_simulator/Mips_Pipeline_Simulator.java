@@ -308,7 +308,7 @@ public class Mips_Pipeline_Simulator {
    {
       System.out.println("\nstepCycle()");
       int PC = OLD_PC;
-      System.out.println("CURRENT COMMAND " + currentCommand);
+      System.out.println("Current Command " + currentCommand);
       System.out.format("PC = %d\n", PC);
       if(!_PipelineRegMem.get(4).equals("squash") &&
          !_PipelineRegMem.get(4).equals("stall") &&
@@ -326,6 +326,8 @@ public class Mips_Pipeline_Simulator {
             updatePipeline(PC, currentCommand, branchTakenFlag, jumpFlag, loadWordFlag);
             //set next instruction to current
             currentCommand = nextCommands.get(0);
+            System.out.println("New command " + currentCommand);
+            System.out.println("Next commands " + nextCommands);
             nextCommands.remove(0);
             if (_CurrentStage == pipelineStage.mem_wb) {// reset after you moved it 
                branchTakenFlag = false;                                   // not exectuting following 3 commands;
@@ -381,7 +383,7 @@ public class Mips_Pipeline_Simulator {
 
       //_PipelineRegMem.set(0,Integer.toString(Integer.parseInt(_PipelineRegMem.get(0)) + 1));
       // Branch
-      if (branchTakenFlag && _CurrentStage == pipelineStage.exe_mem) { //checks before moves
+      if (branchTakenFlag && _CurrentStage == pipelineStage.mem_wb && !currentCommand.equals("beq") && !currentCommand.equals("bne")) { //checks before moves
          System.out.println("UPDATE BRANCH");
          _PipelineRegMem.set(4,_PipelineRegMem.get(3)); 
          _PipelineRegMem.set(1,"squash");
