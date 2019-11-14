@@ -144,7 +144,7 @@ public class Mips_Pipeline_Simulator {
 
    private void step() {
    // s {num1}
-       System.out.println("Simulator Step()****************************");
+       System.out.println("\nSimulator Step()");
        // Check is there a valid _Num1 ?
       _Num1 = (_Num1 == 0) ? 1:_Num1;
 
@@ -182,7 +182,7 @@ public class Mips_Pipeline_Simulator {
 
    private void run() {
    // r
-       System.out.println("Simulator run()*****************************");
+       System.out.println("\nSimulator run()");
       // Setup
       int OLD_PC = 0;
       String currentCommand = this.getCurrentCommand();
@@ -212,6 +212,7 @@ public class Mips_Pipeline_Simulator {
    }
 
    private void printPerformance() {
+      System.out.println("\nprintPerformance()");
       System.out.println("Program complete");
       System.out.format("CPI = %f Cycles = %d Instructions = %d\n",
       ((double)_NumCycles)/_NumInst,_NumCycles,_NumInst);
@@ -224,6 +225,7 @@ public class Mips_Pipeline_Simulator {
 
   private void showPipelineState() {
    // p
+      System.out.println("\nshowPipelineState()");
       System.out.println("pc if/id id/exe exe/mem mem/wb");
       String strList = String.join(", ", _PipelineRegMem);
       System.out.println(strList);
@@ -257,6 +259,7 @@ public class Mips_Pipeline_Simulator {
 
    private List<String> getNextCommands() {
    // returns array list consisting of up to 3 next tokens
+      System.out.println("\ngetNextCommands()");
       List<String> nextCommands = new ArrayList<String>();
       int tempPC = _myEmulator.getPC() + 1;
       for(int i=0; tempPC < _AssemblyCode.size()-1 && i<3; i++) {
@@ -268,6 +271,7 @@ public class Mips_Pipeline_Simulator {
    }
 
    private String getCurrentCommand() {
+      System.out.println("\ngetCurrentCommand()");
       int tempPC = _myEmulator.getPC();
       if(tempPC < _AssemblyCode.size()) {
          return _AssemblyCode.get(tempPC).get(0);
@@ -302,6 +306,7 @@ public class Mips_Pipeline_Simulator {
       boolean jumpFlag,
       boolean loadWordFlag)
    {
+      System.out.println("\nstepCycle()");
       int PC = OLD_PC;
       System.out.println("CURRENT COMMAND " + currentCommand);
       System.out.format("PC = %d\n", PC);
@@ -371,7 +376,7 @@ public class Mips_Pipeline_Simulator {
       boolean jumpFlag,
       boolean loadWordFlag)
    {
-      System.out.println("updatePipeline");
+      System.out.println("\nupdatePipeline()");
       //int PC = _myEmulator.getPC();
 
       //_PipelineRegMem.set(0,Integer.toString(Integer.parseInt(_PipelineRegMem.get(0)) + 1));

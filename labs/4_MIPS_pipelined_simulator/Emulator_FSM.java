@@ -251,11 +251,11 @@ public class Emulator_FSM {
 
       if (inst.equals("addi")) {
       // rt = rs + immed
-         //System.out.println("addi " + assemblyCode.get(2) + " = " + assemblyCode.get(1) + " + " + assemblyCode.get(3));
-         int rt    = regMem[Helpers._RegNum(assemblyCode.get(2))];
-         int rs    = regMem[Helpers._RegNum(assemblyCode.get(1))];
+         System.out.println("addi " + assemblyCode.get(2) + " = " + assemblyCode.get(1) + " + " + assemblyCode.get(3));
+         int rt    = regMem[Helpers._RegNum(assemblyCode.get(1))];
+         int rs    = regMem[Helpers._RegNum(assemblyCode.get(2))];
          int immed = Integer.parseInt(assemblyCode.get(3));
-         regMem[Helpers._RegNum(assemblyCode.get(2))] = rs + immed;
+         regMem[Helpers._RegNum(assemblyCode.get(1))] = rs + immed;
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
             System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(2)),Helpers._RegNum(assemblyCode.get(1)));
@@ -268,10 +268,11 @@ public class Emulator_FSM {
 
       else if (inst.equals("beq")) {
       // offset if rs == rt 
-       //  System.out.println("beq " + assemblyCode.get(1) + " == " + assemblyCode.get(2) + ", relative offset = " + assemblyCode.get(3));
+         System.out.println("beq " + assemblyCode.get(1) + " == " + assemblyCode.get(2) + ", relative offset = " + assemblyCode.get(3));
          int rs    = regMem[Helpers._RegNum(assemblyCode.get(1))];
          int rt    = regMem[Helpers._RegNum(assemblyCode.get(2))];
          int immed = Integer.parseInt(assemblyCode.get(3));
+         System.out.format("rs = %d == rt = %d\n",rs,rt);
          // Check if loadWord flag needed? else reset prev dest reg
          if(_PrevDestReg != -1) {
             System.out.format("prevRd = %d rt = %d, rs = %d\n",_PrevDestReg,Helpers._RegNum(assemblyCode.get(2)),Helpers._RegNum(assemblyCode.get(1)));
