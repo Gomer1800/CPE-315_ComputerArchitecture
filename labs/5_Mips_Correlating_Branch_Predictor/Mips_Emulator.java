@@ -11,6 +11,9 @@ public class Mips_Emulator{
 
    private Emulator_AssemblyDecoder _Decoder = new Emulator_AssemblyDecoder();
 
+   // GHR shift register
+   // predictor table
+   
    private Map< String, Runnable> _Commands = new HashMap<>();
 
    private State _NextState;
