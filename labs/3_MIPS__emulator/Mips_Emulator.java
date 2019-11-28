@@ -46,19 +46,6 @@ public class Mips_Emulator{
 
    public void run_FSM() {
       List<String> cmd = new ArrayList<>();
-      /*
-      // TODO: Whenn call back is supported, remove this 
-      Queue<String> commands = new LinkedList<>();
-      commands.add("h");
-      commands.add("m");
-      commands.add("s");
-      commands.add("d");
-      commands.add("c");
-      commands.add("d");
-      commands.add("q");
-      this._Num1 = 1;
-      this._Num2 = 2;
-      */
 
       while(this._NextState != State.EXIT) 
       {

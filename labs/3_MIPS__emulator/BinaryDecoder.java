@@ -1,6 +1,9 @@
 import java.util.*;
 import java.lang.*;
 
+/*\
+This class reads the tokenized Assembly Instructions and translates it to its Binary Code equivalent, printing it in the process.
+*/
 public class BinaryDecoder {
 
    // ATTRIBUTES
