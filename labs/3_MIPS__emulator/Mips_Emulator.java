@@ -132,7 +132,7 @@ public class Mips_Emulator{
 
    private void step() {
    // s {num1}
-       System.out.println("Step()");
+      //System.out.println("Step()");
       _Num1 = (_Num1 == 0) ? 1:_Num1;
       System.out.printf("\t%d instruction(s) executed\n", _Num1);
       for(int i=0; i<_Num1; i++)
@@ -182,7 +182,8 @@ public class Mips_Emulator{
 
    private void clearAll() {
    // c
-       //System.out.println("clearAll()");
+      //System.out.println("clearAll()");
+      System.out.println("\tSimulator reset");
       _RegMem = new int[32];
       _DataMem = new int[8192];
       _PC = 0;
