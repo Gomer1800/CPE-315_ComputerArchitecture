@@ -111,13 +111,13 @@ public class Helpers {
       if( regStr.equals("$t8") ) { return  24; }
       if( regStr.equals("$t9") ) { return  25; }
 
-      if( regStr.equals("$gp") )   { return 28; }
+      if( regStr.equals("$gp") ) { return  28; }
 
-      if( regStr.equals("$sp") )   { return 29; }
+      if( regStr.equals("$sp") ) { return  29; }
 
-      if( regStr.equals("$fp") )   { return 30; }
+      if( regStr.equals("$fp") ) { return  30; }
 
-      if( regStr.equals("$ra") )   { return 31; }
+      if( regStr.equals("$ra") ) { return  31; }
 
       // Invalid Reg Num
       return -1;

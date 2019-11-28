@@ -9,6 +9,7 @@ CLASSES = \
         BinaryDecoder.java \
         Helpers.java \
         makeInstDict.java \
+        Mips_Emulator.java \
         Mips_Filter.java \
         Mips_Parser.java \
         readFile.java \
