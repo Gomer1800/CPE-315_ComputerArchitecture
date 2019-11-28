@@ -5,7 +5,7 @@ enum State {
    INIT, READ, EXEC, EXIT;
 }
 
-public class Emulator_FSM {
+public class Mips_Emulator{
 
    // ATTRIBUTES
 
@@ -28,7 +28,7 @@ public class Emulator_FSM {
 
    // CONSTRUCTOR
 
-   public Emulator_FSM( List<List<String>> assemblyCode , Parser parser){
+   public Mips_Emulator( List<List<String>> assemblyCode , Parser parser){
       this._NextState = State.INIT;
       this._AssemblyCode = assemblyCode;
       // Populate hashmap with emulator command functions
@@ -46,20 +46,6 @@ public class Emulator_FSM {
 
    public void run_FSM() {
       List<String> cmd = new ArrayList<>();
-      /*
-      // TODO: Whenn call back is supported, remove this 
-      Queue<String> commands = new LinkedList<>();
-      commands.add("h");
-      commands.add("m");
-      commands.add("s");
-      commands.add("d");
-      commands.add("c");
-      commands.add("d");
-      commands.add("q");
-      this._Num1 = 1;
-      this._Num2 = 2;
-
-      */
 
       while(this._NextState != State.EXIT) 
       {
@@ -133,8 +119,9 @@ public class Emulator_FSM {
 
    private void step() {
    // s {num1}
-       System.out.println("Step()");
+      //System.out.println("Step()");
       _Num1 = (_Num1 == 0) ? 1:_Num1;
+      System.out.printf("\t%d instruction(s) executed\n", _Num1);
       for(int i=0; i<_Num1; i++)
       {
          if(_PC >= _AssemblyCode.size()) { break; }
@@ -147,6 +134,7 @@ public class Emulator_FSM {
       System.out.println("run()");
       while(_PC < _AssemblyCode.size())
       {
+         System.out.printf("PC = %d, Assembly Size = %d\n", _PC, _AssemblyCode.size());
          _PC = _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem, _PC, _DataMem, _SP);
       } 
    }
@@ -181,7 +169,8 @@ public class Emulator_FSM {
 
    private void clearAll() {
    // c
-       //System.out.println("clearAll()");
+      //System.out.println("clearAll()");
+      System.out.println("\tSimulator reset");
       _RegMem = new int[32];
       _DataMem = new int[8192];
       _PC = 0;

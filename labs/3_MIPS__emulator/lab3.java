@@ -74,7 +74,7 @@ public class lab3 {
          scriptParser._file = "";
       }   
       
-      Emulator_FSM myFSM = new Emulator_FSM( myParser._AssemblyCode, scriptParser);
+      Mips_Emulator myEmulator = new Mips_Emulator( myParser._AssemblyCode, scriptParser);
 
       List<String> lineList = new ArrayList<>();
       if(scriptParser._isScript) {
@@ -83,8 +83,8 @@ public class lab3 {
       
       scriptParser.tokenize(lineList);
       /* print tokenized List */
-      scriptParser.print();
+      //scriptParser.print();
  
-      myFSM.run_FSM();
+      myEmulator.run_FSM();
    }
 }
