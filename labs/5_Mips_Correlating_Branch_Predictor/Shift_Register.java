@@ -13,11 +13,22 @@ public class Shift_Register {
     private List<String> _Register; // this is the shift register, size is determined by constructor
     
     // CONSTRUCTOR
-    public Shift_Register() {
+    public Shift_Register(int userSize) {
     /*
     Needs to Know:
     - register size
     */
+    this._Size = userSize;
+    this._Register = new ArrayList<String> (_Size);
+    this.initialize();
+    }
+
+    public Shift_Register() {
+    /*
+    Default Constructor, assumes size of 2
+    */
+    this._Register = new ArrayList<String> (_Size);
+    this.initialize();
     }
 
     // METHODS
@@ -25,25 +36,51 @@ public class Shift_Register {
     /*
     This is a getter function which returns the decimal equivalent of the shift register contents
     */
-
-    // Use helper functions to convert the string array to an integer equivalent, for 2, 4, 8 bit arrays
+    String stringValue = this.getString();
+    int value = Integer.parseInt(stringValue, 2); // need string version of shift register binary value
+    return value;
     }
 
     public int getSize() {
     /*
     This getter function returns the size of the 1-dimensional shift register.
     */
+    return _Register.size();
+    }
+
+    public String getString() {
+    /*
+    This getter returns a string representation of the binary value stored in the shift register
+    */
+        String string = "";
+        for(int i=0; i<_Size; i++) {
+            string += _Register.get(i);
+        }
+    return string;
     }
 
     public void insert(boolean myBool) {
     /*
-    This function allows the world to insert a 1 or 0 into the shift register 
+    This function allows the world to insert a 1 or 0 into the shift register from the right.
     */
+        // shift all existing values to the left by one
+        _Register.remove(0);
+        // add newest value to the end
+        String newValue = (myBool) ? "1":"0";
+        _Register.add(_Size-1, newValue);
     }
 
     public void print() {
     /*
     This function prints the shift register contents to standard out
     */
+    System.out.println(_Register);
+    }
+
+    private void initialize() {
+    /*
+    This function is used to initialize the shift register to 0
+    */
+        for(int i=0;i<_Size;i++) { _Register.add("0"); }
     }
 }

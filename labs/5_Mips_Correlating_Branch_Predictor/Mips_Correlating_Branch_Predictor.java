@@ -25,12 +25,15 @@ public class Mips_Correlating_Branch_Predictor {
 
     private List<PredictorState> _Table; // this is predictor table, each element is 2 bits wide
     
+    private List<String> _GHR;
     // CONSTRUCTOR
-    public Mips_Correlating_Branch_Predictor () {
+    public Mips_Correlating_Branch_Predictor (int userTableSize) {
     /*
     Needs to Know:
     - table size
     */
+    this._Size
+    
     }
 
     // METHODS

@@ -85,6 +85,22 @@ public class lab5 {
       /* print tokenized List */
       //scriptParser.print();
  
-      myEmulator.run_FSM();
+      //myEmulator.run_FSM();
+
+      // TESTING
+      Scanner in = new Scanner(System.in);
+      int a = in.nextInt();
+      Shift_Register myGHR = new Shift_Register(a);
+      System.out.printf("Size = %d\n",myGHR.getSize());
+      System.out.println("getString() returns " + myGHR.getString());
+      System.out.printf("getInt() returns %d\n", myGHR.getInt());
+      myGHR.print();
+      // test adding a new value
+      myGHR.insert(true);
+      myGHR.insert(false);
+      System.out.printf("Size = %d\n",myGHR.getSize());
+      System.out.println("getString() returns " + myGHR.getString());
+      System.out.printf("getInt() returns %d\n", myGHR.getInt());
+      myGHR.print();
    }
 }
