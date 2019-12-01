@@ -55,6 +55,62 @@ public class Mips_Correlating_Branch_Predictor {
     /*
     This function updates the predictor table at the specified index using the incoming boolean
     */
+            _Number_Total_Predictions++;
+            _GHR.insert(someBoolean);
+            
+            // check predictor state before printing
+            switch(_Table.get(index))
+            {
+                case WEAK_NT:
+                    // If boolean is NT, change state to STRONG NT
+                    if(someBoolean == false) {
+                        _Number_Correct_Predictions++;
+                        _Table.set(index, PredictorState.STRONG_NT);
+                    }
+                    // If boolean is  T, change state to WEAK T
+                    else if(someBoolean == true) {
+                        _Table.set(index, PredictorState.WEAK_T);
+                    }
+                    break;
+
+                case STRONG_NT:
+                    // If boolean is NT, no change
+                    if(someBoolean == false) {
+                        _Number_Correct_Predictions++;
+                    }
+                    // If boolean is  T, change state to WEAK NT
+                    else if(someBoolean == true) {
+                        _Table.set(index, PredictorState.WEAK_NT);
+                    }
+                    break;
+
+                case WEAK_T:
+                    // If boolean is NT, change state to WEAK NT
+                    if(someBoolean == false) {
+                        _Table.set(index, PredictorState.WEAK_NT);
+                    }
+                    // If boolean is  T, change state to STRONG T
+                    else if(someBoolean == true) {
+                        _Number_Correct_Predictions++;
+                        _Table.set(index, PredictorState.STRONG_T);
+                    }
+                    break;
+
+                case STRONG_T:
+                    // If boolean is NT, change state to WEAK_T
+                    if(someBoolean == false) {
+                        _Table.set(index, PredictorState.STRONG_NT);
+                    }
+                    // If boolean is  T, no change
+                    else if(someBoolean == true) {
+                        _Number_Correct_Predictions++;
+                    }
+                    break;
+
+                default: // default null, report error
+                    System.out.printf("Null error at table index %d\n", index);
+                    break;
+            }
     }
 
     public int getPredictorSize() {
@@ -69,6 +125,7 @@ public class Mips_Correlating_Branch_Predictor {
     This function prints the contents of the predictor table
     */
         System.out.println("Predictor Table print()");
+
         for(int i=0; i<_Size; i++) {
             System.out.printf("%d. ", i);
             // check predictor state before printing
@@ -104,6 +161,8 @@ public class Mips_Correlating_Branch_Predictor {
     */
         System.out.println("\nPredictor Table DEBUG INFO");
         System.out.printf("Size = %d\n", _Table.size());
+        System.out.printf("Total Predictions = %d\n", _Number_Total_Predictions);
+        System.out.printf("Correct Predictions = %d\n", _Number_Correct_Predictions);
         this.print();
 
         _GHR.printDebug();
@@ -120,9 +179,9 @@ public class Mips_Correlating_Branch_Predictor {
         this._GHR   = new Shift_Register(_GHR_Size);
         this._Table = new ArrayList<PredictorState>(_Size);
 
-        // initialize table values to default NULL
+        // initialize table values to WEAK NT
         for(int i=0; i<_Size; i++) {
-            _Table.add(PredictorState.NULL);
+            _Table.add(PredictorState.WEAK_NT);
         }
     }
 }

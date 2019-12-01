@@ -89,6 +89,7 @@ public class lab5 {
 
       // TESTING GHR
       Scanner in = new Scanner(System.in);
+      /*
       int a = in.nextInt();
 
       Shift_Register myGHR = new Shift_Register(a);
@@ -98,10 +99,16 @@ public class lab5 {
       myGHR.insert(true);
       myGHR.insert(false);
       myGHR.printDebug();
+      */
 
       // TESTING PREDICTOR
       int b = in.nextInt();
       Mips_Correlating_Branch_Predictor myTable = new Mips_Correlating_Branch_Predictor(b);
+      myTable.printDebug();
+
+      //testing updating predictor with some booleans
+      myTable.updateTable(1, true);
+      myTable.updateTable(0, false);
       myTable.printDebug();
    }
 }

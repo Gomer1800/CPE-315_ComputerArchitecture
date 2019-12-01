@@ -74,6 +74,7 @@ public class Shift_Register {
     /*
     This function prints the shift register contents to standard out
     */
+        System.out.println("Shift Register print()"); 
         System.out.println(_Register);
     }
 
