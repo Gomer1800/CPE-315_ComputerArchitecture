@@ -87,20 +87,21 @@ public class lab5 {
  
       //myEmulator.run_FSM();
 
-      // TESTING
+      // TESTING GHR
       Scanner in = new Scanner(System.in);
       int a = in.nextInt();
+
       Shift_Register myGHR = new Shift_Register(a);
-      System.out.printf("Size = %d\n",myGHR.getSize());
-      System.out.println("getString() returns " + myGHR.getString());
-      System.out.printf("getInt() returns %d\n", myGHR.getInt());
-      myGHR.print();
+      myGHR.printDebug();
+   
       // test adding a new value
       myGHR.insert(true);
       myGHR.insert(false);
-      System.out.printf("Size = %d\n",myGHR.getSize());
-      System.out.println("getString() returns " + myGHR.getString());
-      System.out.printf("getInt() returns %d\n", myGHR.getInt());
-      myGHR.print();
+      myGHR.printDebug();
+
+      // TESTING PREDICTOR
+      int b = in.nextInt();
+      Mips_Correlating_Branch_Predictor myTable = new Mips_Correlating_Branch_Predictor(b);
+      myTable.printDebug();
    }
 }

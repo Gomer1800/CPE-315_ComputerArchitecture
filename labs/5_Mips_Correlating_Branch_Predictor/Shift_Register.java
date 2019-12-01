@@ -74,7 +74,19 @@ public class Shift_Register {
     /*
     This function prints the shift register contents to standard out
     */
-    System.out.println(_Register);
+        System.out.println(_Register);
+    }
+
+    public void printDebug() {
+    /*
+    Prints all properties of object neatly
+    */
+        System.out.println("\nShift Register DEBUG INFO");
+        System.out.printf("Size = %d\n",this.getSize());
+        System.out.println("getString() returns " + this.getString());
+        System.out.printf("getInt() returns %d\n", this.getInt());
+        
+        this.print();
     }
 
     private void initialize() {
