@@ -13,7 +13,7 @@ public class Mips_Emulator{
 
    // GHR shift register
    // predictor table
-   
+
    private Map< String, Runnable> _Commands = new HashMap<>();
 
    private State _NextState;
@@ -36,6 +36,7 @@ public class Mips_Emulator{
       this._AssemblyCode = assemblyCode;
       // Populate hashmap with emulator command functions
       this._Commands.put("h", () -> this.printHelp());
+      this._Commands.put("b", () -> this.printBranchPredictorAccuracy());
       this._Commands.put("d", () -> this.dumpRegState());
       this._Commands.put("s", () -> this.step());
       this._Commands.put("r", () -> this.run());
@@ -110,6 +111,8 @@ public class Mips_Emulator{
    // h
    System.out.println(
       "\nh = show help\n" +
+      "o = output a comma separated listing of the x,y coordinates to a file called coordinates.csv\n" +
+      "b = output the branch predictor accuracy\n" +
       "d = dump register state\n" +
       "s = single step through the program (i.e. execute 1 instruction and stop)\n" +
       "s num = step through num instructions of the program\n" +
@@ -118,6 +121,10 @@ public class Mips_Emulator{
       "c = clear all registers, memory, and the program counter to 0\n" +
       "q = exit the program\n"
    );
+   }
+
+   private void printBranchPredictorAccuracy() {
+      _Decoder.printBranchPredictorAccuracy();
    }
 
    private void step() {
@@ -178,6 +185,9 @@ public class Mips_Emulator{
       _DataMem = new int[8192];
       _PC = 0;
       _SP = _DataMem[0];
+
+      // reset predictor
+      _Decoder.reset();
    }
    
    private void exit() {

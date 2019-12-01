@@ -21,6 +21,7 @@ public class Mips_Correlating_Branch_Predictor {
     
     // ATTRIBUTES
     private int _Size; // This determines the size of the predictor table, it is determined by the GHR bit size
+
     private int _GHR_Size;
 
     private int _Number_Correct_Predictions;
@@ -51,14 +52,16 @@ public class Mips_Correlating_Branch_Predictor {
     }
 
     // METHODS
-    public void updateTable(int index, boolean someBoolean) {
+    public void updateTable(boolean someBoolean) {
     /*
     This function updates the predictor table at the specified index using the incoming boolean
     */
+            // Step 1: Use GHR to index into predictor table
+            int index = _GHR.getInt();
+
             _Number_Total_Predictions++;
-            _GHR.insert(someBoolean);
-            
-            // check predictor state before printing
+
+            // Step 2: Update Predictor table
             switch(_Table.get(index))
             {
                 case WEAK_NT:
@@ -111,6 +114,9 @@ public class Mips_Correlating_Branch_Predictor {
                     System.out.printf("Null error at table index %d\n", index);
                     break;
             }
+
+            // Step 3: Update GHR
+            _GHR.insert(someBoolean);
     }
 
     public int getPredictorSize() {
@@ -154,6 +160,13 @@ public class Mips_Correlating_Branch_Predictor {
         }
     }
 
+    public void printAccuracy() {
+    /*
+    Prints total predictions vs correct predictions
+    */
+        System.out.printf("Total Predictions = %d\n", _Number_Total_Predictions);
+        System.out.printf("Correct Predictions = %d\n", _Number_Correct_Predictions);
+    }
 
     public void printDebug() {
     /*
@@ -161,8 +174,7 @@ public class Mips_Correlating_Branch_Predictor {
     */
         System.out.println("\nPredictor Table DEBUG INFO");
         System.out.printf("Size = %d\n", _Table.size());
-        System.out.printf("Total Predictions = %d\n", _Number_Total_Predictions);
-        System.out.printf("Correct Predictions = %d\n", _Number_Correct_Predictions);
+        this.printAccuracy();
         this.print();
 
         _GHR.printDebug();

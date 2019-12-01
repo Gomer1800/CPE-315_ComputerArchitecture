@@ -85,10 +85,10 @@ public class lab5 {
       /* print tokenized List */
       //scriptParser.print();
  
-      //myEmulator.run_FSM();
+      myEmulator.run_FSM();
 
       // TESTING GHR
-      Scanner in = new Scanner(System.in);
+      //Scanner in = new Scanner(System.in);
       /*
       int a = in.nextInt();
 
@@ -101,14 +101,16 @@ public class lab5 {
       myGHR.printDebug();
       */
 
+      /*
       // TESTING PREDICTOR
       int b = in.nextInt();
       Mips_Correlating_Branch_Predictor myTable = new Mips_Correlating_Branch_Predictor(b);
       myTable.printDebug();
 
       //testing updating predictor with some booleans
-      myTable.updateTable(1, true);
-      myTable.updateTable(0, false);
+      myTable.updateTable(true);
+      myTable.updateTable(false);
       myTable.printDebug();
+      */
    }
 }

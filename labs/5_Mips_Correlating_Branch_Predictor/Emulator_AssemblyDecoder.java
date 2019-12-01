@@ -3,6 +3,26 @@ import java.lang.*;
 
 public class Emulator_AssemblyDecoder {
  
+   // ATTRIBUTES
+
+   // Correlating Branch Predictor
+   public Mips_Correlating_Branch_Predictor _Predictor;
+
+   // CONSTRUCTOR
+   public Emulator_AssemblyDecoder() { 
+   /*
+   default constructor creates GHR of size 2
+   */
+      this._Predictor = new Mips_Correlating_Branch_Predictor(2);
+   }
+
+   public Emulator_AssemblyDecoder(int user_GHR_size) {
+   /*
+   creates GHR with user given size
+   */
+      this._Predictor = new Mips_Correlating_Branch_Predictor(user_GHR_size);
+   }
+
    // METHODS 
    public int decodeAssembly(/* Line of Mips Code, Register Memory */
       List<String> assemblyCode,
@@ -32,6 +52,10 @@ public class Emulator_AssemblyDecoder {
          int rs    = regMem[Helpers._RegNum(assemblyCode.get(1))];
          int rt    = regMem[Helpers._RegNum(assemblyCode.get(2))];
          int immed = Integer.parseInt(assemblyCode.get(3));
+         
+         // Call Correlating Predictor
+         _Predictor.updateTable(rs == rt);
+
          if (rs == rt) {
             return (PC + 1 + immed);
          }
@@ -44,6 +68,10 @@ public class Emulator_AssemblyDecoder {
          int rs    = regMem[Helpers._RegNum(assemblyCode.get(1))];
          int rt    = regMem[Helpers._RegNum(assemblyCode.get(2))];
          int immed = Integer.parseInt(assemblyCode.get(3));
+
+         // Call Correlating Predictor
+         _Predictor.updateTable(rs != rt);
+
          if (rs != rt){
             return (PC + 1 + immed);
          }
@@ -149,5 +177,13 @@ public class Emulator_AssemblyDecoder {
          return (PC+1);
       }
       return PC;
+   }
+
+   public void reset() {
+      _Predictor.reset();
+   }
+
+   public void printBranchPredictorAccuracy() {
+      _Predictor.printAccuracy();
    }
 }   
