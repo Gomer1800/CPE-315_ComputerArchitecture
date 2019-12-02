@@ -9,7 +9,7 @@ public class Mips_Emulator{
 
    // ATTRIBUTES
 
-   private Emulator_AssemblyDecoder _Decoder = new Emulator_AssemblyDecoder();
+   private Emulator_AssemblyDecoder _Decoder = new Emulator_AssemblyDecoder(); // this object owns the branch predictor
 
    // GHR shift register
    // predictor table
@@ -36,6 +36,7 @@ public class Mips_Emulator{
       this._AssemblyCode = assemblyCode;
       // Populate hashmap with emulator command functions
       this._Commands.put("h", () -> this.printHelp());
+      this._Commands.put("o", () -> this.outputCSV());
       this._Commands.put("b", () -> this.printBranchPredictorAccuracy());
       this._Commands.put("d", () -> this.dumpRegState());
       this._Commands.put("s", () -> this.step());
@@ -123,7 +124,15 @@ public class Mips_Emulator{
    );
    }
 
+   private void outputCSV() {
+   // o
+   /*
+   This function outputs the collect x, y values to a csv file called coordinates.csv
+   */
+   }
+
    private void printBranchPredictorAccuracy() {
+   // b
       _Decoder.printBranchPredictorAccuracy();
    }
 

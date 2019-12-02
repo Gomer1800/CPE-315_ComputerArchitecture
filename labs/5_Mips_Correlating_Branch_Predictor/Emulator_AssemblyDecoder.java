@@ -159,7 +159,7 @@ public class Emulator_AssemblyDecoder {
          return (PC+1);
       }
       
-      else if (inst.equals("lw")){
+      else if (inst.equals("lw")) {
          //System.out.println("lw " + assemblyCode.get(1) + " = Mem[ " + assemblyCode.get(2) + " + " + assemblyCode.get(3) + "]");
          int rt    = regMem[Helpers._RegNum(assemblyCode.get(1))];
          int immed = Integer.parseInt(assemblyCode.get(2));
@@ -168,7 +168,7 @@ public class Emulator_AssemblyDecoder {
          return (PC+1);
       }
       
-      else if (inst.equals("sw")){
+      else if (inst.equals("sw")) {
         // System.out.println("sw " + "Mem[ " + assemblyCode.get(2) + " + " + assemblyCode.get(3) + "] = " + assemblyCode.get(1)); 
          int rt    = regMem[Helpers._RegNum(assemblyCode.get(1))];
          int immed = Integer.parseInt(assemblyCode.get(2));

@@ -164,6 +164,7 @@ public class Mips_Correlating_Branch_Predictor {
     /*
     Prints total predictions vs correct predictions
     */
+        System.out.printf("\n%%%f\n", 100 * (((double)_Number_Correct_Predictions)/_Number_Total_Predictions));
         System.out.printf("Total Predictions = %d\n", _Number_Total_Predictions);
         System.out.printf("Correct Predictions = %d\n", _Number_Correct_Predictions);
     }
