@@ -9,7 +9,7 @@ public class Mips_Emulator{
 
    // ATTRIBUTES
 
-   private Emulator_AssemblyDecoder _Decoder = new Emulator_AssemblyDecoder(); // this object owns the branch predictor
+   private Emulator_AssemblyDecoder _Decoder; // this object owns the branch predictor
 
    // GHR shift register
    // predictor table
@@ -31,7 +31,7 @@ public class Mips_Emulator{
 
    // CONSTRUCTOR
 
-   public Mips_Emulator( List<List<String>> assemblyCode , Parser parser){
+   public Mips_Emulator( List<List<String>> assemblyCode , Parser parser, int ghrSize){
       this._NextState = State.INIT;
       this._AssemblyCode = assemblyCode;
       // Populate hashmap with emulator command functions
@@ -45,6 +45,7 @@ public class Mips_Emulator{
       this._Commands.put("c", () -> this.clearAll());
       this._Commands.put("q", () -> this.exit());
       this._myParser = parser;
+      this._Decoder  = new Emulator_AssemblyDecoder(ghrSize);
    }
 
    // METHODS

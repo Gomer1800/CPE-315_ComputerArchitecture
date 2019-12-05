@@ -25,6 +25,13 @@ public class lab5 {
    
    public static void main(String [] args) {
 
+      // DEBUG: Print Arrguments
+      int i=0;
+      for(String s: args) {
+         System.out.printf("%d) %s\n", i, s);
+         i++;
+      }
+
       // ASSEMBLER
 
       // Set Up: Create hardcoded instruction dictionary for reference
@@ -62,19 +69,37 @@ public class lab5 {
 
       boolean isScript;
       String file;
-     
+      int myGHRSize = 2;
+
       Parser scriptParser = new Parser();
+
+      // Evaluate Terminal Arguments
       // Check if script present 
-      if (args.length == 2) {
-         scriptParser._isScript = true;
-         scriptParser._file = args[1];
+      if (args.length == 2)
+      { // Script or GHR size might be present
+         if(args[1].contains(".script"))
+         { // Script file detected
+            scriptParser._isScript = true;
+            scriptParser._file = args[1];
+         }
+         else 
+         { // GHR size detected
+            myGHRSize = Integer.parseInt(args[1]);
+         }
+      }
+      if (args.length == 3)
+      { // Bot Script and GHR size present
+            scriptParser._isScript = true;
+            scriptParser._file = args[1];
+            myGHRSize = Integer.parseInt(args[2]);
       }
       else {
          scriptParser._isScript = false;
          scriptParser._file = "";
+         // GHR size defaults to 2
       }   
       
-      Mips_Emulator myEmulator = new Mips_Emulator( myParser._AssemblyCode, scriptParser);
+      Mips_Emulator myEmulator = new Mips_Emulator( myParser._AssemblyCode, scriptParser, myGHRSize);
 
       List<String> lineList = new ArrayList<>();
       if(scriptParser._isScript) {
