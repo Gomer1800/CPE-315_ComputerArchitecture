@@ -34,7 +34,7 @@ public class Emulator_AssemblyDecoder {
       String inst = assemblyCode.get(0);
 
       // DEBUG PRINTOUT
-      System.out.println("decodeAssembly() ... " + assemblyCode);
+      //System.out.println("decodeAssembly() ... " + assemblyCode);
 
       if (inst.equals("addi")) {
       // rt = rs + immed

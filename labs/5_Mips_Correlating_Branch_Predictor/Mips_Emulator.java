@@ -1,6 +1,7 @@
 import java.util.*;
 import java.lang.Math;
-   
+import java.io.FileWriter; // used to write .csv file in "o" command
+
 enum State {
    INIT, READ, EXEC, EXIT;
 }
@@ -31,7 +32,7 @@ public class Mips_Emulator{
 
    // CONSTRUCTOR
 
-   public Mips_Emulator( List<List<String>> assemblyCode , Parser parser, int ghrSize){
+   public Mips_Emulator( List<List<String>> assemblyCode , Parser parser, int ghrSize) {
       this._NextState = State.INIT;
       this._AssemblyCode = assemblyCode;
       // Populate hashmap with emulator command functions
@@ -130,6 +131,19 @@ public class Mips_Emulator{
    /*
    This function outputs the collect x, y values to a csv file called coordinates.csv
    */
+      try {
+         FileWriter writer = new FileWriter("./coordinates.csv", false);
+      
+         for(int i=0; i<_DataMem.length; i+=2 )
+         {
+            if(_DataMem[i] == 0 ) { break; }
+            writer.write(Integer.toString(_DataMem[i]) + "," + Integer.toString(_DataMem[i+1]) + "\n");
+         }
+         writer.close();
+      }
+      catch (Exception e) {
+         System.out.print(e.toString());
+      }
    }
 
    private void printBranchPredictorAccuracy() {
@@ -151,10 +165,11 @@ public class Mips_Emulator{
 
    private void run() {
    // r
-      System.out.println("run()");
+      //System.out.println("run()");
       while(_PC < _AssemblyCode.size())
       {
-         System.out.printf("PC = %d, Assembly Size = %d\n", _PC, _AssemblyCode.size());
+         // DEBUG
+         //System.out.printf("PC = %d, Assembly Size = %d\n", _PC, _AssemblyCode.size());
          _PC = _Decoder.decodeAssembly( _AssemblyCode.get(_PC), _RegMem, _PC, _DataMem, _SP);
       } 
    }
@@ -175,7 +190,7 @@ public class Mips_Emulator{
 
    private void printDataMem() {
    // m num1 num2
-      System.out.println("\nprintMem()");
+      //System.out.println("\nprintMem()");
       int i = this._Num1;
       int xMin = this._Num1 % 192;
       int xMax = this._Num2 % 192;
@@ -190,7 +205,7 @@ public class Mips_Emulator{
    private void clearAll() {
    // c
       //System.out.println("clearAll()");
-      System.out.println("\tSimulator reset");
+      //System.out.println("Simulator reset");
       _RegMem = new int[32];
       _DataMem = new int[8192];
       _PC = 0;
@@ -202,7 +217,7 @@ public class Mips_Emulator{
    
    private void exit() {
    // q
-      System.out.println("exit()");
+      //System.out.println("exit()");
       this._NextState = State.EXIT;
    }
 }

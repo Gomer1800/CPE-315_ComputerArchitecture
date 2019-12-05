@@ -26,12 +26,13 @@ public class lab5 {
    public static void main(String [] args) {
 
       // DEBUG: Print Arrguments
+      /*
       int i=0;
       for(String s: args) {
          System.out.printf("%d) %s\n", i, s);
          i++;
       }
-
+      */
       // ASSEMBLER
 
       // Set Up: Create hardcoded instruction dictionary for reference

@@ -51,7 +51,9 @@ public class Parser {
    
    public List<String> fromStdin()
    {
-      System.out.print("fromStdin() ");
+      //DEBUG
+      //System.out.print("fromStdin() ");
+      
       List<String> nextCommand;
       List<String> lineList = readCommands.parseCommands(false, "");
       this.tokenize(lineList);
